@@ -1,0 +1,45 @@
+.container {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo_area {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 65px;
+}
+.logo_area img {
+  padding: 0 20px;
+  height: 40px;
+}
+.auth span {
+  padding: 0 20px;
+  color: #8b8b8b;
+  font-weight: 500;
+}
+
+.menu_bar {
+  width: 100%;
+  height: 40px;
+  background-color: #0e1724;
+  align-items: center;
+  display: flex;
+}
+.menu_wrapper {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 10px;
+}
+.menu_wrapper span {
+  padding: 0 20px;
+  color: #fff;
+}
