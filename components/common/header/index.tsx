@@ -22,7 +22,7 @@ export default function Header() {
       <div className={styles.menu_bar}>
         <div className={styles.menu_wrapper}>
           {menus.map((menu, i) => (
-            <span>{menu.name}</span>
+            <span key={i}>{menu.name}</span>
           ))}
         </div>
       </div>
