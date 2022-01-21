@@ -17,8 +17,6 @@ export default function Carousel({ cardList }: IProps) {
   useEffect(() => {
     handleAnimation();
   }, []);
-  console.log(page);
-  console.log(page % 2);
   return (
     <section className={`${styles.container} ${animate ? styles.animate : ''}`}>
       <img className={styles.card_img} src={cardList[page].bg} />
