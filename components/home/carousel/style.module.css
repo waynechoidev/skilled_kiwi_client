@@ -1,15 +1,21 @@
 .container {
-  position: relative;
-  display: flex;
   margin: 0;
   padding: 0;
   width: 100%;
-}
-
-.animate {
+  overflow-x: hidden;
+  position: relative;
   animation: fader 2s;
 }
 
+.card_wrapper {
+  width: 300%;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+.card {
+  position: relative;
+}
 .card_img {
   width: 100%;
   z-index: -1;
