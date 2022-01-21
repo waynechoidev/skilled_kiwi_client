@@ -4,6 +4,7 @@
   width: 100%;
   overflow-x: hidden;
   position: relative;
+  animation: fader 2s;
 }
 
 .card_wrapper {
