@@ -5,13 +5,6 @@ import { cardList } from '../data/home';
 import styles from '../styles/home.module.css';
 
 const Home: NextPage = () => {
-  // const turnPage = () => {
-  //   if (page < cardList.length - 1) {
-  //     setPage(page + 1);
-  //   } else {
-  //     setPage(0);
-  //   }
-  // };
   return (
     <div className={styles.container}>
       <Head>
