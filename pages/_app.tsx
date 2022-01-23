@@ -3,13 +3,12 @@ import type { AppProps } from 'next/app';
 import Layout from '../components/common/layout';
 import { useRouter } from 'next/router';
 
-const date = new Date();
-
 function MyApp({ Component, pageProps }: AppProps) {
+  const date = new Date();
   const pathName = useRouter().pathname;
 
   switch (pathName) {
-    case '/signin':
+    case '/sign_in':
       return <Component {...pageProps} />;
       break;
 
