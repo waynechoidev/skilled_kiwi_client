@@ -1,30 +1,35 @@
 import React, { useState } from 'react';
-import Footer from '../components/common/footer';
+import AuthService from '../service/auth';
 import styles from '../styles/sign_in.module.css';
 
-export default function SignIn() {
-  const [email, setEmail] = useState('');
+interface IProps {
+  auth: AuthService;
+}
+
+export default function SignIn({ auth }: IProps) {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const date = new Date();
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    auth.signIn(username, password, isChecked);
+    setPassword('');
+  };
 
   return (
     <div className={styles.container}>
       <div className={styles.window}>
         <img src="/img/logo.png" />
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            console.log(email + password);
-          }}
-        >
+        <form onSubmit={handleSubmit}>
           <input
-            type="email"
-            name="email"
-            value={email}
+            type="username"
+            name="username"
+            value={username}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setUsername(e.target.value);
             }}
-            placeholder="Email Address"
+            placeholder="Username"
             className={styles.input_box}
           />
           <input
@@ -34,12 +39,20 @@ export default function SignIn() {
             onChange={(e) => {
               setPassword(e.target.value);
             }}
-            placeholder="Password Address"
+            placeholder="Password"
             className={styles.input_box}
           />
           <div className={styles.condition}>
             <span className={styles.check_stay}>
-              <input type="checkbox" name="stay" checked={true} className={styles.input_check} />
+              <input
+                type="checkbox"
+                name="stay"
+                checked={isChecked}
+                onChange={(e) => {
+                  setIsChecked(e.target.checked);
+                }}
+                className={styles.input_check}
+              />
               Stay Signed In
             </span>
             <a>Forgot Password?</a>

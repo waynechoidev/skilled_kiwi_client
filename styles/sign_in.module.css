@@ -44,10 +44,12 @@
 .check_stay {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .input_check {
-  margin-left: 0;
+  margin: 0;
+  margin-right: 5px;
 }
 
 .button {
