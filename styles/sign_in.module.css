@@ -52,6 +52,16 @@
   margin-right: 5px;
 }
 
+.error {
+  width: 100%;
+  animation: fader 2s;
+  background-color: #fff1f2;
+  color: #636363;
+  padding: 15px;
+  border-left: 30px solid #e34647;
+  margin: 10px auto;
+}
+
 .button {
   background-color: #d9e026;
   border: none;
@@ -63,4 +73,13 @@
 
 .footer {
   margin: 10px auto;
+}
+
+@keyframes fader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

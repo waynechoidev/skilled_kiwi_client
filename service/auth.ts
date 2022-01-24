@@ -8,7 +8,7 @@ interface Result {
 export default class AuthService {
   constructor() {}
 
-  async signIn(username: string, password: string, isChecked: boolean) {
+  async signIn(username: string, password: string) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -24,8 +24,6 @@ export default class AuthService {
     };
     const response = await fetch('http://localhost:8080/auth/sign_in', requestOptions);
     const result: Result = { status: response.status, ...(await response.json()) };
-
-    console.log(result);
 
     return result;
   }
