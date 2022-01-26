@@ -4,18 +4,30 @@ import Layout from '../components/common/layout';
 import { useRouter } from 'next/router';
 import AuthService from '../service/auth';
 import { RecoilRoot } from 'recoil';
+import { useEffect, useState } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const date = new Date();
   const pathName = useRouter().pathname;
+  const [auth] = useState(new AuthService());
 
-  const auth = new AuthService();
+  useEffect(() => {
+    const storage = window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
+
+    auth.init(
+      date,
+      window[storage].getItem('token')!,
+      window[storage].getItem('refresh_token')!,
+      window[storage].getItem('expired_time')!,
+      window[storage].getItem('user_id')!
+    );
+  }, []);
 
   switch (pathName) {
     case '/sign_in':
       return (
         <RecoilRoot>
-          <Component {...pageProps} auth={auth} />
+          <Component {...pageProps} auth={auth} date={date} />
         </RecoilRoot>
       );
       break;

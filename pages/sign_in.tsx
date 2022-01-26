@@ -1,15 +1,16 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import AuthService from '../service/auth';
+import AuthService, { SignInResponse } from '../service/auth';
 import styles from '../styles/sign_in.module.css';
 import { RecoilRoot, atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 import { tokenState } from '../atoms/token';
 
 interface IProps {
   auth: AuthService;
+  date: Date;
 }
 
-export default function SignIn({ auth }: IProps) {
+export default function SignIn({ auth, date }: IProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
@@ -24,18 +25,27 @@ export default function SignIn({ auth }: IProps) {
     setIsHideError(true);
     e.preventDefault();
 
-    const result = await auth.signIn(username, password);
-
+    const result: SignInResponse = await auth.signIn(username, password);
     setPassword('');
 
-    if (result.status > 199 || result.status < 300) {
+    if (result.status > 199 && result.status < 300) {
+      const storage = isChecked ? 'localStorage' : 'sessionStorage';
+
+      window[storage].setItem('token', result.accessToken!);
+      window[storage].setItem('refresh_token', result.refreshToken!);
+      window[storage].setItem('expired_time', result.expiredTime!); //cannot set int in storage
+      window[storage].setItem('user_id', result.userId!); //cannot set int in storage
+
       if (isChecked) {
-        window.localStorage.setItem('token', result.token!);
+        window.localStorage.setItem('stored', 'true');
       } else {
-        window.sessionStorage.setItem('token', result.token!);
+        window.localStorage.removeItem('stored');
       }
-      setToken(result.token!);
-      router.back();
+
+      setToken(result.accessToken!);
+      console.log(result.status);
+
+      router.push('/');
     } else if (result.status > 399) {
       setErrorMsg(result.message!);
       setIsHideError(false);
@@ -46,9 +56,7 @@ export default function SignIn({ auth }: IProps) {
   };
 
   useEffect(() => {
-    const localStorageToken = window.localStorage.getItem('token');
-    const sessionStorageToken = window.sessionStorage.getItem('token');
-    if (localStorageToken || sessionStorageToken) {
+    if (auth.isAuthorized) {
       router.push('/');
     }
   }, []);

@@ -11,20 +11,6 @@ interface IProps {
 }
 
 export default function Layout({ children, date }: IProps) {
-  const [token, setToken] = useRecoilState(tokenState);
-  useEffect(() => {
-    const localStorageToken = window.localStorage.getItem('token');
-    const sessionStorageToken = window.sessionStorage.getItem('token');
-    if (localStorageToken) {
-      setToken(localStorageToken);
-    }
-    if (sessionStorageToken) {
-      setToken(sessionStorageToken);
-    }
-  }, []);
-
-  console.log(token);
-
   return (
     <div className={styles.container}>
       <Header />
