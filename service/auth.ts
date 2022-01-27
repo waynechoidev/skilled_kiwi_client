@@ -8,7 +8,7 @@ export interface SignInResponse {
 }
 
 export default class AuthService {
-  private date: Date | undefined;
+  private date: Date;
   public accessToken: string | undefined;
   public refreshToken: string | undefined;
   public expiredTime: string | undefined;
@@ -16,24 +16,15 @@ export default class AuthService {
 
   public isAuthorized: boolean = false;
 
-  constructor() {}
-
-  init(
-    date: Date,
-    accessToken?: string,
-    refreshToken?: string,
-    expiredTime?: string,
-    userId?: string
-  ) {
+  constructor(date: Date) {
     this.date = date;
-    if (!expiredTime) {
-      return false;
-    }
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
-    this.expiredTime = expiredTime;
-    this.userId = userId;
-    this.isAuthorized = !this.isTokenExpired(expiredTime); // if it is expired, it is not authorized.
+  }
+
+  init(setToken: Function, setIsAuthorized: Function) {
+    this.setMembers();
+    this.isAuthorized = !this.isTokenExpired(this.expiredTime!); // if it is expired, it is not authorized.
+    setToken(this.accessToken);
+    setIsAuthorized(this.isAuthorized.toString());
   }
 
   async signIn(username: string, password: string): Promise<SignInResponse> {
@@ -79,9 +70,22 @@ export default class AuthService {
     };
   }
 
+  signOut(setIsAuthorized: Function) {
+    const storage = window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
+
+    window[storage].removeItem('token')!;
+    window[storage].removeItem('refresh_token')!;
+    window[storage].removeItem('expired_time')!;
+    window[storage].removeItem('user_id')!;
+
+    this.setMembers();
+    this.isAuthorized = false;
+    setIsAuthorized('false');
+  }
+
   private isTokenExpired(expiredTime: string | null) {
     if (!expiredTime) {
-      return false;
+      return true;
     }
 
     if (this.date!.getTime() / 1000 >= parseInt(expiredTime)) {
@@ -89,5 +93,14 @@ export default class AuthService {
     } else {
       return false;
     }
+  }
+
+  private setMembers() {
+    const storage = window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
+
+    this.accessToken = window[storage].getItem('token')!;
+    this.refreshToken = window[storage].getItem('refresh_token')!;
+    this.expiredTime = window[storage].getItem('expired_time')!;
+    this.userId = window[storage].getItem('user_id')!;
   }
 }

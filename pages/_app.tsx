@@ -9,19 +9,7 @@ import { useEffect, useState } from 'react';
 function MyApp({ Component, pageProps }: AppProps) {
   const date = new Date();
   const pathName = useRouter().pathname;
-  const [auth] = useState(new AuthService());
-
-  useEffect(() => {
-    const storage = window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
-
-    auth.init(
-      date,
-      window[storage].getItem('token')!,
-      window[storage].getItem('refresh_token')!,
-      window[storage].getItem('expired_time')!,
-      window[storage].getItem('user_id')!
-    );
-  }, []);
+  const [auth] = useState(new AuthService(date));
 
   switch (pathName) {
     case '/sign_in':
@@ -35,7 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     case '/':
       return (
         <RecoilRoot>
-          <Layout date={date}>
+          <Layout date={date} auth={auth}>
             <Component {...pageProps} />
           </Layout>
         </RecoilRoot>
