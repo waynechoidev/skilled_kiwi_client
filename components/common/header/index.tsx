@@ -21,7 +21,6 @@ export default function Header({ auth }: IProps) {
   ];
 
   const router = useRouter();
-  console.log(isAuthorized);
   return (
     <header className={styles.container}>
       <div className={styles.logo_area}>

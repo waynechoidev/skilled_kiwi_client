@@ -27,7 +27,13 @@ export default class AuthService {
     setIsAuthorized(this.isAuthorized.toString());
   }
 
-  async signIn(username: string, password: string): Promise<SignInResponse> {
+  async signIn(
+    username: string,
+    password: string,
+    isChecked: boolean,
+    setToken: Function,
+    setIsAuthorized: Function
+  ): Promise<SignInResponse> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -59,6 +65,22 @@ export default class AuthService {
       this.userId = result.user_id?.toString();
       this.isAuthorized = true;
     }
+
+    const storage = isChecked ? 'localStorage' : 'sessionStorage';
+
+    window[storage].setItem('token', this.accessToken!);
+    window[storage].setItem('refresh_token', this.refreshToken!);
+    window[storage].setItem('expired_time', this.expiredTime!); //cannot set int in storage
+    window[storage].setItem('user_id', this.userId!); //cannot set int in storage
+
+    if (isChecked) {
+      window.localStorage.setItem('stored', 'true');
+    } else {
+      window.localStorage.removeItem('stored');
+    }
+
+    setToken(this.accessToken!);
+    setIsAuthorized('true');
 
     return {
       status: result.status,

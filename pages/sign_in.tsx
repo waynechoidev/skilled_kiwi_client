@@ -2,8 +2,9 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import AuthService, { SignInResponse } from '../service/auth';
 import styles from '../styles/sign_in.module.css';
-import { RecoilRoot, atom, selector, useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { tokenState } from '../atoms/token';
+import { authState } from '../atoms/is_authorized';
 
 interface IProps {
   auth: AuthService;
@@ -18,6 +19,7 @@ export default function SignIn({ auth, date }: IProps) {
   const [isHideError, setIsHideError] = useState(true);
 
   const [token, setToken] = useRecoilState(tokenState);
+  const [isAuthorized, setIsAuthorized] = useRecoilState(authState);
 
   const router = useRouter();
 
@@ -25,26 +27,16 @@ export default function SignIn({ auth, date }: IProps) {
     setIsHideError(true);
     e.preventDefault();
 
-    const result: SignInResponse = await auth.signIn(username, password);
+    const result: SignInResponse = await auth.signIn(
+      username,
+      password,
+      isChecked,
+      setToken,
+      setIsAuthorized
+    );
     setPassword('');
 
     if (result.status > 199 && result.status < 300) {
-      const storage = isChecked ? 'localStorage' : 'sessionStorage';
-
-      window[storage].setItem('token', result.accessToken!);
-      window[storage].setItem('refresh_token', result.refreshToken!);
-      window[storage].setItem('expired_time', result.expiredTime!); //cannot set int in storage
-      window[storage].setItem('user_id', result.userId!); //cannot set int in storage
-
-      if (isChecked) {
-        window.localStorage.setItem('stored', 'true');
-      } else {
-        window.localStorage.removeItem('stored');
-      }
-
-      setToken(result.accessToken!);
-      console.log(result.status);
-
       router.push('/');
     } else if (result.status > 399) {
       setErrorMsg(result.message!);
