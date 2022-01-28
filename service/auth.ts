@@ -5,35 +5,34 @@ export interface SignInResponse {
   expiredTime?: string;
   userId?: string;
   message?: string;
-}
+} // Sanitized values from response of sign in API
 
 export default class AuthService {
-  private date: Date;
+  private date!: Date;
+  private setToken!: Function;
+  private setIsAuthorized!: Function;
+  private window!: Window;
+
   public accessToken: string | undefined;
   public refreshToken: string | undefined;
   public expiredTime: string | undefined;
   public userId: string | undefined;
 
-  public isAuthorized: boolean = false;
+  constructor() {}
 
-  constructor(date: Date) {
+  init(setToken: Function, setIsAuthorized: Function, window: Window, date: Date) {
+    this.setToken = setToken;
+    this.setIsAuthorized = setIsAuthorized;
+    this.window = window;
     this.date = date;
-  }
-
-  init(setToken: Function, setIsAuthorized: Function) {
     this.setMembers();
-    this.isAuthorized = !this.isTokenExpired(this.expiredTime!); // if it is expired, it is not authorized.
-    setToken(this.accessToken);
-    setIsAuthorized(this.isAuthorized.toString());
+
+    const isAuthorized = !this.isTokenExpired(this.expiredTime!); // if it is expired, it is not authorized.
+    this.setToken(this.accessToken);
+    this.setIsAuthorized(isAuthorized);
   }
 
-  async signIn(
-    username: string,
-    password: string,
-    isChecked: boolean,
-    setToken: Function,
-    setIsAuthorized: Function
-  ): Promise<SignInResponse> {
+  async signIn(username: string, password: string, isChecked: boolean): Promise<SignInResponse> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -63,24 +62,16 @@ export default class AuthService {
       this.refreshToken = result.refresh_token;
       this.expiredTime = (this.date!.getTime() / 1000 + result.expires_in!)?.toString();
       this.userId = result.user_id?.toString();
-      this.isAuthorized = true;
+      this.setToken(this.accessToken!);
+      this.setIsAuthorized(true);
+
+      const storage = isChecked ? 'localStorage' : 'sessionStorage';
+      this.window.localStorage.setItem('stored', storage);
+      this.window[storage].setItem('token', this.accessToken!);
+      this.window[storage].setItem('refresh_token', this.refreshToken!);
+      this.window[storage].setItem('expired_time', this.expiredTime!); //cannot set int in storage
+      this.window[storage].setItem('user_id', this.userId!); //cannot set int in storage
     }
-
-    const storage = isChecked ? 'localStorage' : 'sessionStorage';
-
-    window[storage].setItem('token', this.accessToken!);
-    window[storage].setItem('refresh_token', this.refreshToken!);
-    window[storage].setItem('expired_time', this.expiredTime!); //cannot set int in storage
-    window[storage].setItem('user_id', this.userId!); //cannot set int in storage
-
-    if (isChecked) {
-      window.localStorage.setItem('stored', 'true');
-    } else {
-      window.localStorage.removeItem('stored');
-    }
-
-    setToken(this.accessToken!);
-    setIsAuthorized('true');
 
     return {
       status: result.status,
@@ -92,20 +83,20 @@ export default class AuthService {
     };
   }
 
-  signOut(setIsAuthorized: Function) {
-    const storage = window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
+  signOut() {
+    const storage = this.window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
 
-    window[storage].removeItem('token')!;
-    window[storage].removeItem('refresh_token')!;
-    window[storage].removeItem('expired_time')!;
-    window[storage].removeItem('user_id')!;
+    this.window[storage].removeItem('token')!;
+    this.window[storage].removeItem('refresh_token')!;
+    this.window[storage].removeItem('expired_time')!;
+    this.window[storage].removeItem('user_id')!;
+    this.window.localStorage.removeItem('stored')!;
 
     this.setMembers();
-    this.isAuthorized = false;
-    setIsAuthorized('false');
+    this.setIsAuthorized(false);
   }
 
-  private isTokenExpired(expiredTime: string | null) {
+  private isTokenExpired(expiredTime?: string) {
     if (!expiredTime) {
       return true;
     }

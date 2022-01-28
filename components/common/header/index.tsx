@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { authState } from '../../../atoms/is_authorized';
 import AuthService from '../../../service/auth';
 import styles from './style.module.css';
@@ -10,7 +10,7 @@ interface IProps {
 }
 
 export default function Header({ auth }: IProps) {
-  const [isAuthorized, setIsAuthorized] = useRecoilState(authState);
+  const isAuthorized = useRecoilValue(authState);
   interface menu {
     name: string;
   }
@@ -26,7 +26,7 @@ export default function Header({ auth }: IProps) {
       <div className={styles.logo_area}>
         <img src="/img/logo.png" />
         <div className={styles.auth}>
-          {isAuthorized === 'false' ? (
+          {!isAuthorized ? (
             <>
               <span
                 onClick={() => {
@@ -40,7 +40,7 @@ export default function Header({ auth }: IProps) {
           ) : (
             <span
               onClick={() => {
-                auth.signOut(setIsAuthorized);
+                auth.signOut();
               }}
             >
               Sign Out

@@ -2,8 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import AuthService, { SignInResponse } from '../service/auth';
 import styles from '../styles/sign_in.module.css';
-import { useRecoilState } from 'recoil';
-import { tokenState } from '../atoms/token';
+import { useRecoilValue } from 'recoil';
 import { authState } from '../atoms/is_authorized';
 
 interface IProps {
@@ -18,22 +17,14 @@ export default function SignIn({ auth, date }: IProps) {
   const [errorMsg, setErrorMsg] = useState('');
   const [isHideError, setIsHideError] = useState(true);
 
-  const [token, setToken] = useRecoilState(tokenState);
-  const [isAuthorized, setIsAuthorized] = useRecoilState(authState);
+  const isAuthorized = useRecoilValue(authState);
 
   const router = useRouter();
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsHideError(true);
     e.preventDefault();
 
-    const result: SignInResponse = await auth.signIn(
-      username,
-      password,
-      isChecked,
-      setToken,
-      setIsAuthorized
-    );
+    const result: SignInResponse = await auth.signIn(username, password, isChecked);
     setPassword('');
 
     if (result.status > 199 && result.status < 300) {
@@ -48,7 +39,7 @@ export default function SignIn({ auth, date }: IProps) {
   };
 
   useEffect(() => {
-    if (auth.isAuthorized) {
+    if (isAuthorized) {
       router.push('/');
     }
   }, []);

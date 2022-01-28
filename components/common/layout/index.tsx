@@ -1,7 +1,5 @@
-import React, { ReactChild, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { authState } from '../../../atoms/is_authorized';
-import { tokenState } from '../../../atoms/token';
+import React, { ReactChild } from 'react';
+
 import AuthService from '../../../service/auth';
 import Footer from '../footer';
 import Header from '../header';
@@ -14,12 +12,6 @@ interface IProps {
 }
 
 export default function Layout({ children, date, auth }: IProps) {
-  const [token, setToken] = useRecoilState(tokenState);
-  const [isAuthorized, setIsAuthorized] = useRecoilState(authState);
-  useEffect(() => {
-    auth.init(setToken, setIsAuthorized);
-  }, []);
-
   return (
     <div className={styles.container}>
       <Header auth={auth} />

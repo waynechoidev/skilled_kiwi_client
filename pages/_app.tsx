@@ -4,36 +4,26 @@ import Layout from '../components/common/layout';
 import { useRouter } from 'next/router';
 import AuthService from '../service/auth';
 import { RecoilRoot } from 'recoil';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import Initializer from '../components/common/initializer';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const date = new Date();
   const pathName = useRouter().pathname;
-  const [auth] = useState(new AuthService(date));
+  const date = new Date();
+  const [auth] = useState(new AuthService());
 
-  switch (pathName) {
-    case '/sign_in':
-      return (
-        <RecoilRoot>
-          <Component {...pageProps} auth={auth} date={date} />
-        </RecoilRoot>
-      );
-      break;
-
-    case '/':
-      return (
-        <RecoilRoot>
-          <Layout date={date} auth={auth}>
-            <Component {...pageProps} />
-          </Layout>
-        </RecoilRoot>
-      );
-      break;
-
-    default:
-      return <p>error</p>;
-      break;
-  }
+  return (
+    <RecoilRoot>
+      <Initializer auth={auth} date={date} />
+      {pathName === '/sign_in' ? (
+        <Component {...pageProps} auth={auth} date={date} />
+      ) : (
+        <Layout date={date} auth={auth}>
+          <Component {...pageProps} />
+        </Layout>
+      )}
+    </RecoilRoot>
+  );
 }
 
 export default MyApp;
