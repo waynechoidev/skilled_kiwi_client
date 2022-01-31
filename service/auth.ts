@@ -99,6 +99,8 @@ export default class AuthService {
     this.setIsAuthorized(false);
   }
 
+  signUp() {}
+
   reIssueToken() {
     //get new AccessToken with refresh token
   }

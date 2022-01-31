@@ -35,7 +35,13 @@ export default function Header({ auth }: IProps) {
               >
                 Sign In
               </span>
-              <span>Sign Up</span>
+              <span
+                onClick={() => {
+                  router.push('/sign_up');
+                }}
+              >
+                Sign Up
+              </span>
             </>
           ) : (
             <span
