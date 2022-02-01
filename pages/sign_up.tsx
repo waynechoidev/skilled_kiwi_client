@@ -1,11 +1,25 @@
 import React, { useState } from 'react';
+import AuthService from '../service/auth';
 import styles from '../styles/sign_up.module.css';
 
 interface IProps {
-  date: Date;
+  auth: AuthService;
 }
-export default function SignUp({ date }: IProps) {
-  const numberPrefixList = ['020', '021', '022', '027', '028', '029', '03', '04', '06', '07', '09'];
+
+export default function SignUp({ auth }: IProps) {
+  const numberPrefixList = [
+    '020',
+    '021',
+    '022',
+    '027',
+    '028',
+    '029',
+    '03',
+    '04',
+    '06',
+    '07',
+    '09',
+  ] as const;
 
   const districtList = [
     'Auckland',
@@ -26,27 +40,7 @@ export default function SignUp({ date }: IProps) {
     'Timaru - Oamaru',
     'Otago',
     'Southland',
-  ];
-
-  type District =
-    | 'Auckland'
-    | 'Northland'
-    | 'Waikato'
-    | 'Bay of Plenty'
-    | 'Gisborne'
-    | "Hawke's Bay"
-    | 'Taranaki'
-    | 'Whanganui'
-    | 'Manawatu'
-    | 'Wairarapa'
-    | 'Wellington'
-    | 'Nelson Bays'
-    | 'Marlborough'
-    | 'West Coast'
-    | 'Canterbury'
-    | 'Timaru - Oamaru'
-    | 'Otago'
-    | 'Southland';
+  ] as const; // make the array read only to make a type District
 
   const suburbMap = {
     'Auckland': [
@@ -190,13 +184,15 @@ export default function SignUp({ date }: IProps) {
       'Tokanui',
       'Winton',
     ],
-  };
+  } as const;
+
+  type District = typeof districtList[number];
 
   const [username, setUsername] = useState('');
+  const [isUsernameValid, setIsUsernameValid] = useState(false);
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -207,6 +203,8 @@ export default function SignUp({ date }: IProps) {
   const [district, setDistrict] = useState<District>('Auckland');
   const [suburb, setSuburb] = useState('');
 
+  console.log(isUsernameValid);
+
   return (
     <div className={styles.container}>
       <h1>Create Account</h1>
@@ -214,19 +212,29 @@ export default function SignUp({ date }: IProps) {
         <div className={styles.sub}>
           <h2>Account Details</h2>
           <h3>Username</h3>
+          <p>Choose a username 6 – 30 characters long.</p>
           <input
             type="username"
             name="username"
             value={username}
             onChange={(e) => {
-              setUsername(e.target.value);
+              const currentValue = e.target.value;
+              setUsername(currentValue);
+              setTimeout(async () => {
+                if (currentValue.length >= 6 && currentValue.length <= 30) {
+                  setIsUsernameValid(await auth.checkValidUsername(currentValue));
+                } else {
+                  setIsUsernameValid(false);
+                }
+              }, 500);
             }}
             className={styles.input_box}
           />
+          {username.length > 0 && (isUsernameValid ? 'O' : 'X')}
           <h3>Password</h3>
           <p>
-            Make sure it's at least 15 characters OR at least 8 characters including a number and a
-            letter.
+            Choose a password at least 15 characters OR at least 8 characters including a number and
+            a letter.
           </p>
           <input
             type="password"

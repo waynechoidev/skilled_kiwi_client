@@ -15,6 +15,8 @@ export interface SignInResponse {
   message?: string;
 } // Sanitized values from response of sign in API
 
+const urlBase = 'http://localhost:8080';
+
 export default class AuthService {
   private date!: Date;
   private setToken!: Function;
@@ -100,6 +102,22 @@ export default class AuthService {
   }
 
   signUp() {}
+
+  async checkValidUsername(username: string): Promise<boolean> {
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
+
+    const response: { isValid: boolean } = await (
+      await fetch(`${urlBase}/auth/check_username/${username}`, requestOptions)
+    ).json();
+
+    return response.isValid;
+  }
 
   reIssueToken() {
     //get new AccessToken with refresh token

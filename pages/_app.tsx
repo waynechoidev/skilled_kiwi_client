@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Component {...pageProps} auth={auth} date={date} />
       ) : (
         <Layout date={date} auth={auth}>
-          <Component {...pageProps} />
+          <Component {...pageProps} auth={auth} />
         </Layout>
       )}
     </RecoilRoot>
