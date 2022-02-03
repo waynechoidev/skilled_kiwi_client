@@ -1,332 +1,224 @@
 import React, { useState } from 'react';
+import {
+  districtList,
+  numberPrefixList,
+  suburbMap,
+  District,
+  CompulsoryParameter,
+} from '../data/sign_up';
 import AuthService from '../service/auth';
+import {
+  confirmPasswordFilterConstructor,
+  inputHandlerConstructor,
+  passwordFilter,
+  usernameFilterConstructor,
+} from '../service/sign_up';
 import styles from '../styles/sign_up.module.css';
-
 interface IProps {
   auth: AuthService;
 }
 
 export default function SignUp({ auth }: IProps) {
-  const numberPrefixList = [
-    '020',
-    '021',
-    '022',
-    '027',
-    '028',
-    '029',
-    '03',
-    '04',
-    '06',
-    '07',
-    '09',
-  ] as const;
-
-  const districtList = [
-    'Auckland',
-    'Northland',
-    'Waikato',
-    'Bay of Plenty',
-    'Gisborne',
-    "Hawke's Bay",
-    'Taranaki',
-    'Whanganui',
-    'Manawatu',
-    'Wairarapa',
-    'Wellington',
-    'Nelson Bays',
-    'Marlborough',
-    'West Coast',
-    'Canterbury',
-    'Timaru - Oamaru',
-    'Otago',
-    'Southland',
-  ] as const; // make the array read only to make a type District
-
-  const suburbMap = {
-    'Auckland': [
-      'Albany',
-      'Auckland City',
-      'Botany Downs',
-      'Clevedon',
-      'Franklin',
-      'Great Barrier Island',
-      'Helensville',
-      'Henderson',
-      'Hibiscus Coast',
-      'Kumeu',
-      'Mangere',
-      'Manukau',
-      'New Lynn',
-      'North Shore',
-      'Onehunga',
-      'Papakura',
-      'Pukekohe',
-      'Remuera',
-      'Waiheke Island',
-      'Waitakere',
-      'Waiuku',
-      'Warkworth',
-      'Wellsford',
-    ],
-    'Northland': [
-      'Dargaville',
-      'Kaikohe',
-      'Kaitaia',
-      'Kawakawa',
-      'Kerikeri',
-      'Mangawhai',
-      'Maungaturoto',
-      'Paihia',
-      'Whangarei',
-    ],
-
-    'Waikato': [
-      'Cambridge',
-      'Coromandel',
-      'Hamilton',
-      'Huntly',
-      'Matamata',
-      'Morrinsville',
-      'Ngaruawahia',
-      'Ngatea',
-      'Otorohanga',
-      'Paeroa',
-      'Raglan',
-      'Taumarunui',
-      'Taupo',
-      'Te Awamutu',
-      'Te Kuiti',
-      'Thames',
-      'Tokoroa/Putaruru',
-      'Turangi',
-      'Waihi',
-      'Whangamata',
-      'Whitianga',
-    ],
-    'Bay of Plenty': [
-      'Katikati',
-      'Kawerau',
-      'Mt. Maunganui',
-      'Opotiki',
-      'Papamoa',
-      'Rotorua',
-      'Tauranga',
-      'Te Puke',
-      'Waihi Beach',
-      'Whakatane',
-    ],
-    'Gisborne': ['Gisborne', 'Ruatoria'],
-    "Hawke's Bay": ['Hastings', 'Napier', 'Waipukurau', 'Wairoa'],
-    'Taranaki': ['Hawera', 'Mokau', 'New Plymouth', 'Opunake', 'Stratford'],
-    'Whanganui': ['Ohakune', 'Taihape', 'Waiouru', 'Whanganui'],
-    'Manawatu': [
-      'Bulls',
-      'Dannevirke',
-      'Feilding',
-      'Levin',
-      'Manawatu',
-      'Marton',
-      'Pahiatua',
-      'Palmerston North',
-      'Woodville',
-    ],
-    'Wairarapa': ['Carterton', 'Featherston', 'Greytown', 'Martinborough', 'Masterton'],
-    'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua', 'Upper Hutt City', 'Wellington City'],
-    'Nelson Bays': ['Golden Bay', 'Motueka', 'Murchison', 'Nelson'],
-    'Marlborough': ['Blenheim', 'Marlborough Sounds', 'Picton'],
-    'West Coast': ['Greymouth', 'Hokitika', 'Westport'],
-    'Canterbury': [
-      'Akaroa',
-      'Amberley',
-      'Ashburton',
-      'Belfast',
-      'Cheviot',
-      'Christchurch City',
-      'Darfield',
-      'Fairlie',
-      'Ferrymead',
-      'Geraldine',
-      'Halswell',
-      'Hanmer Springs',
-      'Kaiapoi',
-      'Kaikoura',
-      'Lyttelton',
-      'Mt Cook',
-      'Rangiora',
-      'Rolleston',
-      'Selwyn',
-    ],
-    'Timaru - Oamaru': ['Kurow', 'Oamaru', 'Timaru', 'Twizel', 'Waimate'],
-    'Otago': [
-      'Alexandra',
-      'Balclutha',
-      'Cromwell',
-      'Dunedin',
-      'Lawrence',
-      'Milton',
-      'Palmerston',
-      'Queenstown',
-      'Ranfurly',
-      'Roxburgh',
-      'Tapanui',
-      'Wanaka',
-    ],
-    'Southland': [
-      'Bluff',
-      'Edendale',
-      'Gore',
-      'Invercargill',
-      'Lumsden',
-      'Otautau',
-      'Riverton',
-      'Stewart Island',
-      'Te Anau',
-      'Tokanui',
-      'Winton',
-    ],
-  } as const;
-
-  type District = typeof districtList[number];
-
+  // Variables
   const [username, setUsername] = useState('');
-  const [isUsernameValid, setIsUsernameValid] = useState(false);
-
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState<'male' | 'female' | 'diverse' | ''>('');
   const [birthday, setBirthday] = useState('1990-01-01');
   const [phoneNumberPrefix, setPhoneNumberPrefix] = useState('020');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [district, setDistrict] = useState<District>('Auckland');
-  const [suburb, setSuburb] = useState('');
+  const [suburb, setSuburb] = useState('Albany');
 
-  console.log(isUsernameValid);
+  const [isError, setIsError] = useState<CompulsoryParameter[]>([]);
+  console.log(phoneNumber);
+  //Sanitizers
+  const [isUsernameValid, setIsUsernameValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
+
+  const isValid = (item: string, validChecker: boolean) => {
+    if (item.length > 0) {
+      return <span>{validChecker ? 'O' : 'X'}</span>;
+    }
+  };
+
+  const genderButton = (genderItem: 'male' | 'female' | 'diverse') => {
+    return (
+      <input
+        type="radio"
+        name="gender"
+        value={gender}
+        checked={gender === genderItem}
+        onChange={() => {
+          setGender(genderItem);
+        }}
+      />
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsError([]);
+
+    if (
+      isUsernameValid &&
+      isPasswordValid &&
+      isConfirmPasswordValid &&
+      email &&
+      firstName &&
+      lastName &&
+      gender &&
+      birthday &&
+      phoneNumberPrefix &&
+      phoneNumber &&
+      district &&
+      suburb
+    ) {
+      const result = await auth.signUp(
+        username,
+        password,
+        email,
+        firstName,
+        lastName,
+        gender,
+        birthday,
+        phoneNumberPrefix,
+        phoneNumber,
+        district,
+        suburb
+      );
+      console.log(result);
+    } else {
+      isUsernameValid || setIsError((isError) => [...isError, 'username']);
+      isPasswordValid || setIsError((isError) => ['password', ...isError]);
+      isConfirmPasswordValid || setIsError((isError) => ['confirmPassword', ...isError]);
+      email || setIsError((isError) => ['email', ...isError]);
+      firstName || setIsError((isError) => [...isError, 'firstName']);
+      lastName || setIsError((isError) => ['lastName', ...isError]);
+      gender || setIsError((isError) => ['gender', ...isError]);
+      birthday || setIsError((isError) => ['birthday', ...isError]);
+      phoneNumberPrefix || setIsError((isError) => ['phoneNumberPrefix', ...isError]);
+      phoneNumber || setIsError((isError) => ['phoneNumber', ...isError]);
+      district || setIsError((isError) => ['district', ...isError]);
+      suburb || setIsError((isError) => ['suburb', ...isError]);
+    }
+  };
+
+  const checkError = (i: CompulsoryParameter) => {
+    return isError.indexOf(i) != -1;
+  };
 
   return (
     <div className={styles.container}>
       <h1>Create Account</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className={styles.sub}>
           <h2>Account Details</h2>
+
           <h3>Username</h3>
-          <p>Choose a username 6 – 30 characters long.</p>
+          <p className={styles.desc}>Choose a username 6 - 20 characters long.</p>
           <input
-            type="username"
+            className={styles.text_input}
+            type="text"
             name="username"
             value={username}
-            onChange={(e) => {
-              const currentValue = e.target.value;
-              setUsername(currentValue);
-              setTimeout(async () => {
-                if (currentValue.length >= 6 && currentValue.length <= 30) {
-                  setIsUsernameValid(await auth.checkValidUsername(currentValue));
-                } else {
-                  setIsUsernameValid(false);
-                }
-              }, 500);
-            }}
-            className={styles.input_box}
+            onChange={inputHandlerConstructor(
+              setUsername,
+              setIsUsernameValid,
+              usernameFilterConstructor(auth)
+            )}
           />
-          {username.length > 0 && (isUsernameValid ? 'O' : 'X')}
+          {isValid(username, isUsernameValid)}
+          {checkError('username') && <p className={styles.error}>Username is not valid.</p>}
+
           <h3>Password</h3>
-          <p>
-            Choose a password at least 15 characters OR at least 8 characters including a number and
-            a letter.
+          <p className={styles.desc}>
+            Choose a password 8 - 20 characters including at least a letter, a number and a special
+            character (!@#$%^&*).
           </p>
           <input
+            className={styles.text_input}
             type="password"
             name="password"
             value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            className={styles.input_box}
+            onChange={inputHandlerConstructor(setPassword, setIsPasswordValid, passwordFilter)}
           />
+          {isValid(password, isPasswordValid)}
+          {checkError('password') && <p className={styles.error}>Password is not valid.</p>}
+
           <h3>Confirm Password</h3>
           <input
-            type="confirmPassword"
+            className={styles.text_input}
+            type="password"
             name="confirmPassword"
             value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-            }}
-            className={styles.input_box}
+            onChange={inputHandlerConstructor(
+              setConfirmPassword,
+              setIsConfirmPasswordValid,
+              confirmPasswordFilterConstructor(isPasswordValid, password)
+            )}
           />
+          {isValid(confirmPassword, isConfirmPasswordValid)}
+          {checkError('confirmPassword') && (
+            <p className={styles.error}>Confirm Password is not valid.</p>
+          )}
+
           <h3>Email Address</h3>
           <input
-            type="email"
+            className={styles.text_input}
+            type="text"
             name="email"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            className={styles.input_box}
+            onChange={inputHandlerConstructor(setEmail)}
           />
+          {checkError('email') && <p className={styles.error}>Email Address is not valid.</p>}
         </div>
         <div className={styles.sub}>
           <h2>Contact Details</h2>
           <h3>First Name</h3>
           <input
+            className={styles.text_input}
             type="text"
             name="firstName"
             value={firstName}
-            onChange={(e) => {
-              setFirstName(e.target.value);
-            }}
-            className={styles.input_box}
+            onChange={inputHandlerConstructor(setFirstName)}
           />
+          {checkError('firstName') && <p className={styles.error}>First Name is not valid.</p>}
+
           <h3>Last Name</h3>
           <input
+            className={styles.text_input}
             type="text"
             name="lastName"
             value={lastName}
-            onChange={(e) => {
-              setLastName(e.target.value);
-            }}
-            className={styles.input_box}
+            onChange={inputHandlerConstructor(setLastName)}
           />
+          {checkError('lastName') && <p className={styles.error}>Last Name is not valid.</p>}
+
           <h3>Gender</h3>
           <div className={styles.gender_radio}>
-            <input
-              type="radio"
-              name="gender"
-              checked={gender === 'male'}
-              onChange={() => {
-                setGender('male');
-              }}
-            />
+            {genderButton('male')}
             <label>Male</label>
-            <input
-              type="radio"
-              name="gender"
-              checked={gender === 'female'}
-              onChange={() => {
-                setGender('female');
-              }}
-            />
+            {genderButton('female')}
             <label>Female</label>
-            <input
-              type="radio"
-              name="gender"
-              checked={gender === 'diverse'}
-              onChange={() => {
-                setGender('diverse');
-              }}
-            />
+            {genderButton('diverse')}
             <label>Gender Diverse</label>
           </div>
+          {checkError('gender') && <p className={styles.error}>Gender is not valid.</p>}
+
           <h3>Date of Birth</h3>
           <input
+            className={styles.text_input}
             type="date"
             name="birthday"
             value={birthday}
             onChange={(e) => {
               setBirthday(e.target.value);
             }}
-            className={styles.input_box}
           />
           <h3>Phone Number</h3>
           <div className={styles.phone_number}>
@@ -344,21 +236,26 @@ export default function SignUp({ auth }: IProps) {
               ))}
             </select>
             <input
-              type="text"
+              type="number"
+              step="1"
               name="number"
               value={phoneNumber}
               onChange={(e) => {
-                setPhoneNumber(e.target.value);
+                setPhoneNumber(e.target.value.toString());
               }}
             />
           </div>
+          {checkError('phoneNumber') && <p className={styles.error}>Phone Number is not valid.</p>}
+
           <h3>Location (closest district)</h3>
           <div className={styles.location}>
             <select
               name="district"
               value={district}
               onChange={(e) => {
-                setDistrict(e.target.value! as District);
+                const districtValue = e.target.value! as District;
+                setDistrict(districtValue);
+                setSuburb(suburbMap[districtValue][0]);
               }}
             >
               {districtList.map((n) => (
@@ -382,6 +279,7 @@ export default function SignUp({ auth }: IProps) {
             </select>
           </div>
         </div>
+        <input type="submit" value="Sign Up" />
       </form>
     </div>
   );

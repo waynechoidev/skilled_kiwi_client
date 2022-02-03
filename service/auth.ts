@@ -101,7 +101,44 @@ export default class AuthService {
     this.setIsAuthorized(false);
   }
 
-  signUp() {}
+  async signUp(
+    username: string,
+    password: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    gender: string,
+    birthday: string,
+    phoneNumberPrefix: string,
+    phoneNumber: string,
+    district: string,
+    suburb: string
+  ) {
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({
+        username,
+        password,
+        email,
+        firstName,
+        lastName,
+        gender,
+        birthday,
+        phoneNumberPrefix,
+        phoneNumber,
+        district,
+        suburb,
+      }),
+    };
+
+    const response = await fetch('http://localhost:8080/auth/sign_up', requestOptions);
+    const result: RawSignInResponse = { status: response.status, ...(await response.json()) };
+    return result;
+  }
 
   async checkValidUsername(username: string): Promise<boolean> {
     const myHeaders = new Headers();
