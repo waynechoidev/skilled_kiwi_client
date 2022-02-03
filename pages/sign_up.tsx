@@ -9,6 +9,8 @@ import {
 import AuthService from '../service/auth';
 import {
   confirmPasswordFilterConstructor,
+  emailFilterConstructor,
+  handleSubmitConstructor,
   inputHandlerConstructor,
   passwordFilter,
   usernameFilterConstructor,
@@ -33,16 +35,45 @@ export default function SignUp({ auth }: IProps) {
   const [district, setDistrict] = useState<District>('Auckland');
   const [suburb, setSuburb] = useState('Albany');
 
+  const [isSubmitValid, setIsSubmitValid] = useState(true);
   const [isError, setIsError] = useState<CompulsoryParameter[]>([]);
-  console.log(phoneNumber);
+
   //Sanitizers
   const [isUsernameValid, setIsUsernameValid] = useState(false);
+  const [isUsernameUnique, setIsUsernameUnique] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isEmailUnique, setIsEmailUnique] = useState(true);
+
+  const handleSubmit = handleSubmitConstructor(
+    auth,
+    username,
+    password,
+    email,
+    firstName,
+    lastName,
+    gender,
+    birthday,
+    phoneNumberPrefix,
+    phoneNumber,
+    district,
+    suburb,
+    setIsError,
+    isUsernameValid,
+    isUsernameUnique,
+    isPasswordValid,
+    isConfirmPasswordValid,
+    isEmailValid,
+    isEmailUnique,
+    setIsSubmitValid
+  );
 
   const isValid = (item: string, validChecker: boolean) => {
     if (item.length > 0) {
-      return <span>{validChecker ? 'O' : 'X'}</span>;
+      return (
+        <img className={styles.valid_icon} src={validChecker ? '/img/yes.svg' : '/img/no.svg'} />
+      );
     }
   };
 
@@ -60,54 +91,6 @@ export default function SignUp({ auth }: IProps) {
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsError([]);
-
-    if (
-      isUsernameValid &&
-      isPasswordValid &&
-      isConfirmPasswordValid &&
-      email &&
-      firstName &&
-      lastName &&
-      gender &&
-      birthday &&
-      phoneNumberPrefix &&
-      phoneNumber &&
-      district &&
-      suburb
-    ) {
-      const result = await auth.signUp(
-        username,
-        password,
-        email,
-        firstName,
-        lastName,
-        gender,
-        birthday,
-        phoneNumberPrefix,
-        phoneNumber,
-        district,
-        suburb
-      );
-      console.log(result);
-    } else {
-      isUsernameValid || setIsError((isError) => [...isError, 'username']);
-      isPasswordValid || setIsError((isError) => ['password', ...isError]);
-      isConfirmPasswordValid || setIsError((isError) => ['confirmPassword', ...isError]);
-      email || setIsError((isError) => ['email', ...isError]);
-      firstName || setIsError((isError) => [...isError, 'firstName']);
-      lastName || setIsError((isError) => ['lastName', ...isError]);
-      gender || setIsError((isError) => ['gender', ...isError]);
-      birthday || setIsError((isError) => ['birthday', ...isError]);
-      phoneNumberPrefix || setIsError((isError) => ['phoneNumberPrefix', ...isError]);
-      phoneNumber || setIsError((isError) => ['phoneNumber', ...isError]);
-      district || setIsError((isError) => ['district', ...isError]);
-      suburb || setIsError((isError) => ['suburb', ...isError]);
-    }
-  };
-
   const checkError = (i: CompulsoryParameter) => {
     return isError.indexOf(i) != -1;
   };
@@ -121,61 +104,81 @@ export default function SignUp({ auth }: IProps) {
 
           <h3>Username</h3>
           <p className={styles.desc}>Choose a username 6 - 20 characters long.</p>
-          <input
-            className={styles.text_input}
-            type="text"
-            name="username"
-            value={username}
-            onChange={inputHandlerConstructor(
-              setUsername,
-              setIsUsernameValid,
-              usernameFilterConstructor(auth)
-            )}
-          />
-          {isValid(username, isUsernameValid)}
-          {checkError('username') && <p className={styles.error}>Username is not valid.</p>}
+          <div className={styles.input_wrapper}>
+            <input
+              className={styles.text_input}
+              type="text"
+              name="username"
+              value={username}
+              onChange={inputHandlerConstructor(
+                setUsername,
+                setIsUsernameValid,
+                usernameFilterConstructor(auth, setIsUsernameUnique)
+              )}
+            />
+            {isValid(username, isUsernameValid)}
+          </div>
+          {isUsernameUnique || <p className={styles.error}>Username is already exist.</p>}
+          {checkError('username') && isUsernameUnique && (
+            <p className={styles.error}>Username is not valid.</p>
+          )}
 
           <h3>Password</h3>
           <p className={styles.desc}>
             Choose a password 8 - 20 characters including at least a letter, a number and a special
             character (!@#$%^&*).
           </p>
-          <input
-            className={styles.text_input}
-            type="password"
-            name="password"
-            value={password}
-            onChange={inputHandlerConstructor(setPassword, setIsPasswordValid, passwordFilter)}
-          />
-          {isValid(password, isPasswordValid)}
+          <div className={styles.input_wrapper}>
+            <input
+              className={styles.text_input}
+              type="password"
+              name="password"
+              value={password}
+              onChange={inputHandlerConstructor(setPassword, setIsPasswordValid, passwordFilter)}
+            />
+            {isValid(password, isPasswordValid)}
+          </div>
           {checkError('password') && <p className={styles.error}>Password is not valid.</p>}
 
           <h3>Confirm Password</h3>
-          <input
-            className={styles.text_input}
-            type="password"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={inputHandlerConstructor(
-              setConfirmPassword,
-              setIsConfirmPasswordValid,
-              confirmPasswordFilterConstructor(isPasswordValid, password)
-            )}
-          />
-          {isValid(confirmPassword, isConfirmPasswordValid)}
+          <div className={styles.input_wrapper}>
+            <input
+              className={styles.text_input}
+              type="password"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={inputHandlerConstructor(
+                setConfirmPassword,
+                setIsConfirmPasswordValid,
+                confirmPasswordFilterConstructor(isPasswordValid, password)
+              )}
+            />
+            {isValid(confirmPassword, isConfirmPasswordValid)}
+          </div>
           {checkError('confirmPassword') && (
             <p className={styles.error}>Confirm Password is not valid.</p>
           )}
 
           <h3>Email Address</h3>
-          <input
-            className={styles.text_input}
-            type="text"
-            name="email"
-            value={email}
-            onChange={inputHandlerConstructor(setEmail)}
-          />
-          {checkError('email') && <p className={styles.error}>Email Address is not valid.</p>}
+          <div className={styles.input_wrapper}>
+            <input
+              className={styles.text_input}
+              type="text"
+              name="email"
+              value={email}
+              onChange={inputHandlerConstructor(
+                setEmail,
+                setIsEmailValid,
+                emailFilterConstructor(auth, setIsEmailUnique)
+              )}
+            />
+            {isValid(email, isEmailValid)}
+          </div>
+
+          {isEmailUnique || <p className={styles.error}>Email Address is already exist.</p>}
+          {checkError('email') && isEmailUnique && (
+            <p className={styles.error}>Email Address is not valid.</p>
+          )}
         </div>
         <div className={styles.sub}>
           <h2>Contact Details</h2>
@@ -278,8 +281,11 @@ export default function SignUp({ auth }: IProps) {
               ))}
             </select>
           </div>
+          <div className={styles.submit_button_wrapper}>
+            <input className={styles.submit_button} type="submit" value="Create Your Account" />
+            {isSubmitValid || <img className={styles.valid_icon} src="/img/no.svg" />}
+          </div>
         </div>
-        <input type="submit" value="Sign Up" />
       </form>
     </div>
   );

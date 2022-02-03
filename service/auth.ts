@@ -156,6 +156,22 @@ export default class AuthService {
     return response.isValid;
   }
 
+  async checkValidEmail(email: string): Promise<boolean> {
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
+
+    const response: { isValid: boolean } = await (
+      await fetch(`${urlBase}/auth/check_email/${email}`, requestOptions)
+    ).json();
+
+    return response.isValid;
+  }
+
   reIssueToken() {
     //get new AccessToken with refresh token
   }

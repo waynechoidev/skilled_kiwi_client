@@ -39,14 +39,23 @@
 }
 
 .input_wrapper {
-  margin: 15px;
-  padding: 5px;
+  display: flex;
+  align-items: center;
 }
 
 .text_input {
-  margin: 5px 0 10px 0;
+  margin: 5px 0;
   padding: 5px;
   width: 60%;
+}
+.valid_icon {
+  margin: 5px;
+  height: 100%;
+}
+.check_button {
+  font-size: 0.8rem;
+  padding: 5px;
+  background-color: #fff;
 }
 
 .gender_radio {
@@ -90,4 +99,14 @@
   font-size: 1rem;
   margin: 0;
   margin-bottom: 10px;
+}
+
+.submit_button_wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+.submit_button {
+  width: 200px;
+  padding: 10px 20px;
 }
