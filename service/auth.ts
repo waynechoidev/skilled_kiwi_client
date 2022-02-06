@@ -1,4 +1,4 @@
-interface RawSignInResponse {
+interface SignResponse {
   status: number;
   message?: string;
   access_token?: string;
@@ -6,7 +6,7 @@ interface RawSignInResponse {
   expires_in?: number;
   user_id?: number;
 } // Raw values from response of sign in API
-export interface SignInResponse {
+export interface SignResult {
   status: number;
   accessToken?: string;
   refreshToken?: string;
@@ -42,7 +42,7 @@ export default class AuthService {
     this.setIsAuthorized(isAuthorized);
   }
 
-  async signIn(username: string, password: string, isChecked: boolean): Promise<SignInResponse> {
+  async signIn(username: string, password: string, isChecked: boolean): Promise<SignResult> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -56,33 +56,7 @@ export default class AuthService {
     };
 
     const response = await fetch('http://localhost:8080/auth/sign_in', requestOptions);
-    const result: RawSignInResponse = { status: response.status, ...(await response.json()) };
-
-    if (result.status === 201) {
-      this.accessToken = result.access_token;
-      this.refreshToken = result.refresh_token;
-      this.expiredTime = (this.date!.getTime() / 1000 + result.expires_in!)?.toString(); //cannot set int in storage
-      this.userId = result.user_id?.toString(); //cannot set int in storage
-
-      this.setMembersToStorage(
-        this.accessToken!,
-        this.refreshToken!,
-        this.expiredTime!,
-        this.userId!
-      );
-
-      this.setToken(this.accessToken!);
-      this.setIsAuthorized(true);
-    }
-
-    return {
-      status: result.status,
-      accessToken: this.accessToken,
-      refreshToken: this.refreshToken,
-      expiredTime: this.expiredTime,
-      userId: this.userId,
-      message: result.message,
-    };
+    return this.setTokenFromResponse(response);
   }
 
   signOut() {
@@ -136,8 +110,7 @@ export default class AuthService {
     };
 
     const response = await fetch('http://localhost:8080/auth/sign_up', requestOptions);
-    const result: RawSignInResponse = { status: response.status, ...(await response.json()) };
-    return result;
+    return response.status;
   }
 
   async checkValidUsername(username: string): Promise<boolean> {
@@ -208,5 +181,34 @@ export default class AuthService {
     window[storage].setItem('refresh_token', refreshToken);
     window[storage].setItem('expired_time', expiredTime);
     window[storage].setItem('user_id', userId);
+  }
+  private setTokenFromResponse(response: Response) {
+    const result: SignResponse = { status: response.status, ...response.json() };
+
+    if (result.status === 201) {
+      this.accessToken = result.access_token;
+      this.refreshToken = result.refresh_token;
+      this.expiredTime = (this.date!.getTime() / 1000 + result.expires_in!)?.toString(); //cannot set int in storage
+      this.userId = result.user_id?.toString(); //cannot set int in storage
+
+      this.setMembersToStorage(
+        this.accessToken!,
+        this.refreshToken!,
+        this.expiredTime!,
+        this.userId!
+      );
+
+      this.setToken(this.accessToken!);
+      this.setIsAuthorized(true);
+    }
+
+    return {
+      status: result.status,
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken,
+      expiredTime: this.expiredTime,
+      userId: this.userId,
+      message: result.message,
+    };
   }
 }

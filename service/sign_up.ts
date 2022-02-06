@@ -1,3 +1,4 @@
+import { NextRouter } from 'next/router';
 import { CompulsoryParameter } from '../data/sign_up';
 import AuthService from './auth';
 
@@ -58,8 +59,7 @@ export const emailFilterConstructor = (
   };
 };
 
-export const handleSubmitConstructor = (
-  auth: AuthService,
+export function handleSubmitConstructor(
   username: string,
   password: string,
   email: string,
@@ -71,36 +71,27 @@ export const handleSubmitConstructor = (
   phoneNumber: string,
   district: string,
   suburb: string,
-  setIsError: React.Dispatch<React.SetStateAction<CompulsoryParameter[]>>,
   isUsernameValid: boolean,
-  isUsernameUnique: boolean,
   isPasswordValid: boolean,
   isConfirmPasswordValid: boolean,
   isEmailValid: boolean,
-  isEmailUnique: boolean,
-  setIsSubmitValid: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+  auth: AuthService,
+  setIsError: React.Dispatch<React.SetStateAction<CompulsoryParameter[]>>,
+  setIsSubmitValid: React.Dispatch<React.SetStateAction<boolean>>,
+  router: NextRouter
+) {
+  let isValidateReq = true;
+  for (let i = 0; i <= arguments.length - 4; i++) {
+    if (!arguments[i]) {
+      isValidateReq = false;
+    }
+  }
+
   return async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitValid(true);
     setIsError([]);
-
-    if (
-      isUsernameValid &&
-      isUsernameUnique &&
-      isPasswordValid &&
-      isConfirmPasswordValid &&
-      isEmailValid &&
-      isEmailUnique &&
-      firstName &&
-      lastName &&
-      gender &&
-      birthday &&
-      phoneNumberPrefix &&
-      phoneNumber &&
-      district &&
-      suburb
-    ) {
+    if (isValidateReq) {
       const result = await auth.signUp(
         username,
         password,
@@ -114,7 +105,9 @@ export const handleSubmitConstructor = (
         district,
         suburb
       );
-      console.log(result);
+      if (result === 201) {
+        router.push('/');
+      }
     } else {
       setIsSubmitValid(false);
       isUsernameValid || setIsError((isError) => [...isError, 'username']);
@@ -131,4 +124,4 @@ export const handleSubmitConstructor = (
       suburb || setIsError((isError) => ['suburb', ...isError]);
     }
   };
-};
+}

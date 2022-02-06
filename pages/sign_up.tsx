@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import {
   districtList,
@@ -46,8 +47,9 @@ export default function SignUp({ auth }: IProps) {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isEmailUnique, setIsEmailUnique] = useState(true);
 
+  const router = useRouter();
+
   const handleSubmit = handleSubmitConstructor(
-    auth,
     username,
     password,
     email,
@@ -59,14 +61,14 @@ export default function SignUp({ auth }: IProps) {
     phoneNumber,
     district,
     suburb,
-    setIsError,
     isUsernameValid,
-    isUsernameUnique,
     isPasswordValid,
     isConfirmPasswordValid,
     isEmailValid,
-    isEmailUnique,
-    setIsSubmitValid
+    auth,
+    setIsError,
+    setIsSubmitValid,
+    router
   );
 
   const isValid = (item: string, validChecker: boolean) => {
@@ -174,7 +176,6 @@ export default function SignUp({ auth }: IProps) {
             />
             {isValid(email, isEmailValid)}
           </div>
-
           {isEmailUnique || <p className={styles.error}>Email Address is already exist.</p>}
           {checkError('email') && isEmailUnique && (
             <p className={styles.error}>Email Address is not valid.</p>
