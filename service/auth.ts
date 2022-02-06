@@ -1,10 +1,10 @@
 interface SignResponse {
   status: number;
   message?: string;
-  access_token?: string;
-  refresh_token?: string;
-  expires_in?: number;
-  user_id?: number;
+  accessToken?: string;
+  refreshToken?: string;
+  expiresIn?: number;
+  userId?: number;
 } // Raw values from response of sign in API
 export interface SignResult {
   status: number;
@@ -30,16 +30,20 @@ export default class AuthService {
 
   constructor() {}
 
-  init(setToken: Function, setIsAuthorized: Function, window: Window, date: Date) {
+  async init(setToken: Function, setIsAuthorized: Function, window: Window, date: Date) {
     this.setToken = setToken;
     this.setIsAuthorized = setIsAuthorized;
     this.window = window;
     this.date = date;
     this.getMembersFromStorage();
 
-    const isAuthorized = !this.isTokenExpired(this.expiredTime!); // if it is expired, it is not authorized.
-    this.setToken(this.accessToken);
-    this.setIsAuthorized(isAuthorized);
+    const isAuthorized = !this.isAccessTokenExpired(this.expiredTime); // if it is expired, it is not authorized.
+    if (isAuthorized) {
+      this.setToken(this.accessToken);
+      this.setIsAuthorized(isAuthorized);
+    } else {
+      await this.reIssueToken(this.userId!, this.refreshToken!);
+    }
   }
 
   async signIn(username: string, password: string, isChecked: boolean): Promise<SignResult> {
@@ -56,16 +60,16 @@ export default class AuthService {
     };
 
     const response = await fetch('http://localhost:8080/auth/sign_in', requestOptions);
-    return this.setTokenFromResponse(response);
+    return this.setTokenFromResponse(response, isChecked);
   }
 
   signOut() {
     const storage = this.window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
 
     this.window[storage].removeItem('token');
-    this.window[storage].removeItem('refresh_token');
-    this.window[storage].removeItem('expired_time');
-    this.window[storage].removeItem('user_id');
+    this.window[storage].removeItem('refreshToken');
+    this.window[storage].removeItem('expiredTime');
+    this.window[storage].removeItem('userId');
     this.window.localStorage.removeItem('stored');
 
     this.accessToken = undefined;
@@ -113,6 +117,22 @@ export default class AuthService {
     return response.status;
   }
 
+  async reIssueToken(userId: string, refreshToken: string): Promise<SignResult> {
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({
+        userId,
+        refreshToken,
+      }),
+    };
+    const response = await fetch('http://localhost:8080/auth/reissue_token', requestOptions);
+    return this.setTokenFromResponse(response);
+  }
+
   async checkValidUsername(username: string): Promise<boolean> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -145,11 +165,7 @@ export default class AuthService {
     return response.isValid;
   }
 
-  reIssueToken() {
-    //get new AccessToken with refresh token
-  }
-
-  private isTokenExpired(expiredTime?: string) {
+  private isAccessTokenExpired(expiredTime?: string) {
     if (!expiredTime) {
       return true;
     }
@@ -160,46 +176,52 @@ export default class AuthService {
       return false;
     }
   }
-
   private getMembersFromStorage() {
-    const storage = window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
+    const storage =
+      window.localStorage.getItem('stored') === 'localStorage' ? 'localStorage' : 'sessionStorage';
 
     this.accessToken = window[storage].getItem('token')!;
-    this.refreshToken = window[storage].getItem('refresh_token')!;
-    this.expiredTime = window[storage].getItem('expired_time')!;
-    this.userId = window[storage].getItem('user_id')!;
+    this.refreshToken = window[storage].getItem('refreshToken')!;
+    this.expiredTime = window[storage].getItem('expiredTime')!;
+    this.userId = window[storage].getItem('userId')!;
   }
   private setMembersToStorage(
     accessToken: string,
     refreshToken: string,
     expiredTime: string,
-    userId: string
+    userId: string,
+    isChecked?: boolean
   ) {
-    const storage = window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
+    const storage = isChecked ? 'localStorage' : 'sessionStorage';
 
+    window.localStorage.setItem('stored', storage);
     window[storage].setItem('token', accessToken);
-    window[storage].setItem('refresh_token', refreshToken);
-    window[storage].setItem('expired_time', expiredTime);
-    window[storage].setItem('user_id', userId);
+    window[storage].setItem('refreshToken', refreshToken);
+    window[storage].setItem('expiredTime', expiredTime);
+    window[storage].setItem('userId', userId);
   }
-  private setTokenFromResponse(response: Response) {
+
+  private setTokenFromResponse(response: Response, isChecked?: boolean): SignResult {
     const result: SignResponse = { status: response.status, ...response.json() };
 
     if (result.status === 201) {
-      this.accessToken = result.access_token;
-      this.refreshToken = result.refresh_token;
-      this.expiredTime = (this.date!.getTime() / 1000 + result.expires_in!)?.toString(); //cannot set int in storage
-      this.userId = result.user_id?.toString(); //cannot set int in storage
+      this.accessToken = result.accessToken;
+      this.refreshToken = result.refreshToken;
+      this.expiredTime = (this.date!.getTime() / 1000 + result.expiresIn!)?.toString(); //cannot set int in storage
+      this.userId = result.userId?.toString(); //cannot set int in storage
 
       this.setMembersToStorage(
         this.accessToken!,
         this.refreshToken!,
         this.expiredTime!,
-        this.userId!
+        this.userId!,
+        isChecked
       );
 
       this.setToken(this.accessToken!);
       this.setIsAuthorized(true);
+    } else {
+      console.error(result.message);
     }
 
     return {
