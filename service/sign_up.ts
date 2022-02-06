@@ -2,11 +2,11 @@ import { NextRouter } from 'next/router';
 import { CompulsoryParameter } from '../data/sign_up';
 const urlBase = 'http://localhost:8080';
 
-export const inputHandlerConstructor = (
+export function inputHandlerConstructor(
   setItem: React.Dispatch<React.SetStateAction<string>>,
   setValid?: React.Dispatch<React.SetStateAction<boolean>>,
   filter?: (str: string) => Promise<boolean>
-): React.ChangeEventHandler<HTMLInputElement> => {
+): React.ChangeEventHandler<HTMLInputElement> {
   return (e) => {
     const currentValue = e.target.value.replaceAll(' ', '');
     setItem(currentValue);
@@ -17,11 +17,11 @@ export const inputHandlerConstructor = (
       }, 500);
     }
   };
-};
+}
 
-export const usernameFilterConstructor = (
+export function usernameFilterConstructor(
   setIsUsernameUnique: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+) {
   return async (str: string): Promise<boolean> => {
     if (str.length >= 6 && str.length <= 20) {
       const checkUsername = await checkValidUsername(str);
@@ -31,21 +31,21 @@ export const usernameFilterConstructor = (
       return false;
     }
   };
-};
+}
 
-export const passwordFilter = async (str: string) => {
+export async function passwordFilter(str: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,20}$/.test(str);
-};
+}
 
-export const confirmPasswordFilterConstructor = (isPasswordValid: boolean, password: string) => {
+export function confirmPasswordFilterConstructor(isPasswordValid: boolean, password: string) {
   return async (str: string) => {
     return isPasswordValid ? str === password : false;
   };
-};
+}
 
-export const emailFilterConstructor = (
+export function emailFilterConstructor(
   setIsEmailUnique: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+) {
   return async (str: string): Promise<boolean> => {
     if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(str)) {
       const checkEmail = await checkValidEmail(str);
@@ -55,7 +55,7 @@ export const emailFilterConstructor = (
       return false;
     }
   };
-};
+}
 
 export function handleSubmitConstructor(
   username: string,
