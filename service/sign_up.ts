@@ -1,6 +1,6 @@
 import { NextRouter } from 'next/router';
 import { CompulsoryParameter } from '../data/sign_up';
-import AuthService from './auth';
+const urlBase = 'http://localhost:8080';
 
 export const inputHandlerConstructor = (
   setItem: React.Dispatch<React.SetStateAction<string>>,
@@ -20,12 +20,11 @@ export const inputHandlerConstructor = (
 };
 
 export const usernameFilterConstructor = (
-  auth: AuthService,
   setIsUsernameUnique: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   return async (str: string): Promise<boolean> => {
     if (str.length >= 6 && str.length <= 20) {
-      const checkUsername = await auth.checkValidUsername(str);
+      const checkUsername = await checkValidUsername(str);
       setIsUsernameUnique(checkUsername);
       return checkUsername;
     } else {
@@ -45,12 +44,11 @@ export const confirmPasswordFilterConstructor = (isPasswordValid: boolean, passw
 };
 
 export const emailFilterConstructor = (
-  auth: AuthService,
   setIsEmailUnique: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   return async (str: string): Promise<boolean> => {
     if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(str)) {
-      const checkEmail = await auth.checkValidEmail(str);
+      const checkEmail = await checkValidEmail(str);
       setIsEmailUnique(checkEmail);
       return checkEmail;
     } else {
@@ -75,7 +73,6 @@ export function handleSubmitConstructor(
   isPasswordValid: boolean,
   isConfirmPasswordValid: boolean,
   isEmailValid: boolean,
-  auth: AuthService,
   setIsError: React.Dispatch<React.SetStateAction<CompulsoryParameter[]>>,
   setIsSubmitValid: React.Dispatch<React.SetStateAction<boolean>>,
   router: NextRouter
@@ -92,7 +89,7 @@ export function handleSubmitConstructor(
     setIsSubmitValid(true);
     setIsError([]);
     if (isValidateReq) {
-      const result = await auth.signUp(
+      const result = await signUp(
         username,
         password,
         email,
@@ -124,4 +121,74 @@ export function handleSubmitConstructor(
       suburb || setIsError((isError) => ['suburb', ...isError]);
     }
   };
+}
+
+async function checkValidUsername(username: string): Promise<boolean> {
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+
+  const requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+  };
+
+  const response: { isValid: boolean } = await (
+    await fetch(`${urlBase}/auth/check_username/${username}`, requestOptions)
+  ).json();
+
+  return response.isValid;
+}
+
+async function checkValidEmail(email: string): Promise<boolean> {
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+
+  const requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+  };
+
+  const response: { isValid: boolean } = await (
+    await fetch(`${urlBase}/auth/check_email/${email}`, requestOptions)
+  ).json();
+
+  return response.isValid;
+}
+
+async function signUp(
+  username: string,
+  password: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+  gender: string,
+  birthday: string,
+  phoneNumberPrefix: string,
+  phoneNumber: string,
+  district: string,
+  suburb: string
+) {
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+
+  const requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify({
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+      gender,
+      birthday,
+      phoneNumberPrefix,
+      phoneNumber,
+      district,
+      suburb,
+    }),
+  };
+
+  const response = await fetch('http://localhost:8080/auth/sign_up', requestOptions);
+  return response.status;
 }

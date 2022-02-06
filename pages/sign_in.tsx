@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import AuthService, { SignResult } from '../service/auth';
+import AuthService from '../service/auth';
 import styles from '../styles/sign_in.module.css';
 import { useRecoilValue } from 'recoil';
 import { authState } from '../atoms/is_authorized';
@@ -24,7 +24,7 @@ export default function SignIn({ auth, date }: IProps) {
     setIsHideError(true);
     e.preventDefault();
 
-    const result: SignResult = await auth.signIn(username, password, isChecked);
+    const result = await auth.signIn(username, password, isChecked);
     setPassword('');
 
     if (result.status > 199 && result.status < 300) {

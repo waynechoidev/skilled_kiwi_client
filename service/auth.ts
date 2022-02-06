@@ -6,7 +6,7 @@ interface SignResponse {
   expiresIn?: number;
   userId?: number;
 } // Raw values from response of sign in API
-export interface SignResult {
+interface SignResult {
   status: number;
   accessToken?: string;
   refreshToken?: string;
@@ -15,20 +15,21 @@ export interface SignResult {
   message?: string;
 } // Sanitized values from response of sign in API
 
-const urlBase = 'http://localhost:8080';
-
 export default class AuthService {
   private date!: Date;
   private setToken!: Function;
   private setIsAuthorized!: Function;
   private window!: Window;
+  private urlBase: string;
 
   public accessToken: string | undefined;
   public refreshToken: string | undefined;
   public expiredTime: string | undefined;
   public userId: string | undefined;
 
-  constructor() {}
+  constructor() {
+    this.urlBase = 'http://localhost:8080';
+  }
 
   async init(setToken: Function, setIsAuthorized: Function, window: Window, date: Date) {
     this.setToken = setToken;
@@ -59,7 +60,7 @@ export default class AuthService {
       }),
     };
 
-    const response = await fetch('http://localhost:8080/auth/sign_in', requestOptions);
+    const response = await fetch(`${this.urlBase}/auth/sign_in`, requestOptions);
     return this.setTokenFromResponse(response, isChecked);
   }
 
@@ -79,44 +80,6 @@ export default class AuthService {
     this.setIsAuthorized(false);
   }
 
-  async signUp(
-    username: string,
-    password: string,
-    email: string,
-    firstName: string,
-    lastName: string,
-    gender: string,
-    birthday: string,
-    phoneNumberPrefix: string,
-    phoneNumber: string,
-    district: string,
-    suburb: string
-  ) {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-
-    const requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify({
-        username,
-        password,
-        email,
-        firstName,
-        lastName,
-        gender,
-        birthday,
-        phoneNumberPrefix,
-        phoneNumber,
-        district,
-        suburb,
-      }),
-    };
-
-    const response = await fetch('http://localhost:8080/auth/sign_up', requestOptions);
-    return response.status;
-  }
-
   async reIssueToken(userId: string, refreshToken: string): Promise<SignResult> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -129,40 +92,8 @@ export default class AuthService {
         refreshToken,
       }),
     };
-    const response = await fetch('http://localhost:8080/auth/reissue_token', requestOptions);
+    const response = await fetch(`${this.urlBase}/auth/reissue_token`, requestOptions);
     return this.setTokenFromResponse(response);
-  }
-
-  async checkValidUsername(username: string): Promise<boolean> {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-
-    const requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-    };
-
-    const response: { isValid: boolean } = await (
-      await fetch(`${urlBase}/auth/check_username/${username}`, requestOptions)
-    ).json();
-
-    return response.isValid;
-  }
-
-  async checkValidEmail(email: string): Promise<boolean> {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-
-    const requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-    };
-
-    const response: { isValid: boolean } = await (
-      await fetch(`${urlBase}/auth/check_email/${email}`, requestOptions)
-    ).json();
-
-    return response.isValid;
   }
 
   private isAccessTokenExpired(expiredTime?: string) {
@@ -200,7 +131,6 @@ export default class AuthService {
     window[storage].setItem('expiredTime', expiredTime);
     window[storage].setItem('userId', userId);
   }
-
   private setTokenFromResponse(response: Response, isChecked?: boolean): SignResult {
     const result: SignResponse = { status: response.status, ...response.json() };
 

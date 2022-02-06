@@ -7,7 +7,6 @@ import {
   District,
   CompulsoryParameter,
 } from '../data/sign_up';
-import AuthService from '../service/auth';
 import {
   confirmPasswordFilterConstructor,
   emailFilterConstructor,
@@ -17,11 +16,8 @@ import {
   usernameFilterConstructor,
 } from '../service/sign_up';
 import styles from '../styles/sign_up.module.css';
-interface IProps {
-  auth: AuthService;
-}
 
-export default function SignUp({ auth }: IProps) {
+export default function SignUp() {
   // Variables
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -65,7 +61,6 @@ export default function SignUp({ auth }: IProps) {
     isPasswordValid,
     isConfirmPasswordValid,
     isEmailValid,
-    auth,
     setIsError,
     setIsSubmitValid,
     router
@@ -115,7 +110,7 @@ export default function SignUp({ auth }: IProps) {
               onChange={inputHandlerConstructor(
                 setUsername,
                 setIsUsernameValid,
-                usernameFilterConstructor(auth, setIsUsernameUnique)
+                usernameFilterConstructor(setIsUsernameUnique)
               )}
             />
             {isValid(username, isUsernameValid)}
@@ -171,7 +166,7 @@ export default function SignUp({ auth }: IProps) {
               onChange={inputHandlerConstructor(
                 setEmail,
                 setIsEmailValid,
-                emailFilterConstructor(auth, setIsEmailUnique)
+                emailFilterConstructor(setIsEmailUnique)
               )}
             />
             {isValid(email, isEmailValid)}
