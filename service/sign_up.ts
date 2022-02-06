@@ -5,7 +5,7 @@ const urlBase = 'http://localhost:8080';
 export function inputHandlerConstructor(
   setItem: React.Dispatch<React.SetStateAction<string>>,
   setValid?: React.Dispatch<React.SetStateAction<boolean>>,
-  filter?: (str: string) => Promise<boolean>
+  filter?: (str: string) => Promise<boolean> | boolean
 ): React.ChangeEventHandler<HTMLInputElement> {
   return (e) => {
     const currentValue = e.target.value.replaceAll(' ', '');
@@ -33,12 +33,12 @@ export function usernameFilterConstructor(
   };
 }
 
-export async function passwordFilter(str: string) {
+export function passwordFilter(str: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,20}$/.test(str);
 }
 
 export function confirmPasswordFilterConstructor(isPasswordValid: boolean, password: string) {
-  return async (str: string) => {
+  return (str: string) => {
     return isPasswordValid ? str === password : false;
   };
 }
