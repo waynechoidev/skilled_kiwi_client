@@ -1,0 +1,112 @@
+.container {
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: 100px;
+  color: var(--color);
+}
+
+.container h1 {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.sub {
+  padding: 20px;
+  margin: 10px auto;
+  width: calc(100% - 20px);
+  border: 1px solid #ebebeb;
+  background-color: #fbfbfb;
+}
+
+.sub h2 {
+  margin: 0;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.sub h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.desc {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.input_wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.text_input {
+  margin: 5px 0;
+  padding: 5px;
+  width: 60%;
+}
+.valid_icon {
+  margin: 5px;
+  height: 100%;
+}
+.check_button {
+  font-size: 0.8rem;
+  padding: 5px;
+  background-color: #fff;
+}
+
+.gender_radio {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  margin: 5px 0 10px 0;
+}
+.gender_radio input {
+  margin: 0 10px;
+}
+.gender_radio label {
+  margin-right: 10px;
+}
+
+.phone_number {
+  width: 100%;
+}
+.phone_number select {
+  margin: 5px 0;
+  padding: 5px;
+  width: 60px;
+}
+.phone_number input {
+  margin: 5px;
+  padding: 5px;
+  width: calc(60% - 65px);
+}
+
+.location {
+  width: 60%;
+}
+.location select {
+  margin: 5px 0;
+  padding: 5px;
+  width: 50%;
+}
+
+.error {
+  color: #ff4848;
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.submit_button_wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+.submit_button {
+  width: 200px;
+  padding: 10px 20px;
+}
