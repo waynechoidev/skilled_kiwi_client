@@ -15,7 +15,7 @@ interface SignResult {
   message?: string;
 } // Sanitized values from response of sign in API
 
-export class AuthService {
+export default class AuthService {
   private date!: Date;
   private setToken!: Function;
   private setIsAuthorized!: Function;
@@ -166,5 +166,3 @@ export class AuthService {
     };
   }
 }
-
-export const signUpValidator = () => {};

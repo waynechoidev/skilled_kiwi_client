@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '../components/common/layout';
 import { useRouter } from 'next/router';
-import { AuthService } from '../service/auth';
+import AuthService from '../service/auth';
 import { RecoilRoot } from 'recoil';
 import { useState } from 'react';
 import Initializer from '../components/common/initializer';
