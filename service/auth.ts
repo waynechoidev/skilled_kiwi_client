@@ -15,7 +15,7 @@ interface SignResult {
   message?: string;
 } // Sanitized values from response of sign in API
 
-export default class AuthService {
+export class AuthService {
   private date!: Date;
   private setToken!: Function;
   private setIsAuthorized!: Function;
@@ -38,12 +38,14 @@ export default class AuthService {
     this.date = date;
     this.getMembersFromStorage();
 
-    const isAuthorized = !this.isAccessTokenExpired(this.expiredTime); // if it is expired, it is not authorized.
-    if (isAuthorized) {
-      this.setToken(this.accessToken);
-      this.setIsAuthorized(isAuthorized);
-    } else {
-      await this.reIssueToken(this.userId!, this.refreshToken!);
+    if (this.expiredTime) {
+      const isAuthorized = !this.isAccessTokenExpired(this.expiredTime); // if it is expired, it is not authorized.
+      if (isAuthorized) {
+        this.setToken(this.accessToken);
+        this.setIsAuthorized(isAuthorized);
+      } else {
+        await this.reIssueToken(this.userId!, this.refreshToken!);
+      }
     }
   }
 
@@ -164,3 +166,5 @@ export default class AuthService {
     };
   }
 }
+
+export const signUpValidator = () => {};
