@@ -1,202 +1,136 @@
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React from 'react';
+import ErrorMessage from '../components/sign_up/error_message';
+import Input from '../components/sign_up/input';
 import {
   districtList,
-  numberPrefixList,
+  phoneNumberPrefixList,
   suburbMap,
   District,
-  CompulsoryParameter,
+  SignUpValues,
+  SignUpErrorValues,
 } from '../data/sign_up';
+import useForm from '../hooks/use_form';
 import {
   confirmPasswordFilterConstructor,
-  emailFilterConstructor,
-  handleSubmitConstructor,
-  inputHandlerConstructor,
+  emailFilter,
   passwordFilter,
-  usernameFilterConstructor,
+  signUp,
+  usernameFilter,
+  validateSignUp,
 } from '../service/sign_up';
 import styles from '../styles/sign_up.module.css';
 
 export default function SignUp() {
-  // Variables
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [gender, setGender] = useState<'male' | 'female' | 'diverse' | ''>('');
-  const [birthday, setBirthday] = useState('1990-01-01');
-  const [phoneNumberPrefix, setPhoneNumberPrefix] = useState('020');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [district, setDistrict] = useState<District>('Auckland');
-  const [suburb, setSuburb] = useState('Albany');
-
-  const [isSubmitValid, setIsSubmitValid] = useState(true);
-  const [isError, setIsError] = useState<CompulsoryParameter[]>([]);
-
-  //Sanitizers
-  const [isUsernameValid, setIsUsernameValid] = useState(false);
-  const [isUsernameUnique, setIsUsernameUnique] = useState(true);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(true);
-  const [isEmailUnique, setIsEmailUnique] = useState(true);
-
   const router = useRouter();
-
-  const handleSubmit = handleSubmitConstructor(
-    username,
-    password,
-    email,
-    firstName,
-    lastName,
-    gender,
-    birthday,
-    phoneNumberPrefix,
-    phoneNumber,
-    district,
-    suburb,
-    isUsernameValid,
-    isPasswordValid,
-    isConfirmPasswordValid,
-    isEmailValid,
-    setIsError,
-    setIsSubmitValid,
-    router
-  );
-
-  const isValid = (item: string, validChecker: boolean) => {
-    if (item.length > 0) {
-      return (
-        <img className={styles.valid_icon} src={validChecker ? '/img/yes.svg' : '/img/no.svg'} />
-      );
-    }
-  };
+  const { values, setValues, errors, handleChange, submitHandle } = useForm<
+    SignUpValues,
+    SignUpErrorValues
+  >({
+    initialValues: {
+      username: '',
+      password: '',
+      confirmPassword: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      gender: '',
+      birthday: '1990-01-01',
+      phoneNumberPrefix: '020',
+      phoneNumber: '',
+      district: 'Auckland',
+      suburb: 'Albany',
+    },
+    onSubmit: handleSubmit,
+    validate: validateSignUp,
+  });
 
   const genderButton = (genderItem: 'male' | 'female' | 'diverse') => {
     return (
       <input
         type="radio"
         name="gender"
-        value={gender}
-        checked={gender === genderItem}
-        onChange={() => {
-          setGender(genderItem);
-        }}
+        value={genderItem}
+        checked={values.gender === genderItem}
+        onChange={handleChange()}
       />
     );
   };
 
-  const checkError = (i: CompulsoryParameter) => {
-    return isError.indexOf(i) != -1;
-  };
-
+  async function handleSubmit(values: SignUpValues) {
+    const result = await signUp(values);
+    if (result === 201) {
+      router.push('/');
+    }
+  }
   return (
     <div className={styles.container}>
       <h1>Create Account</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={submitHandle}>
         <div className={styles.sub}>
           <h2>Account Details</h2>
-
           <h3>Username</h3>
           <p className={styles.desc}>Choose a username 6 - 20 characters long.</p>
-          <div className={styles.input_wrapper}>
-            <input
-              className={styles.text_input}
-              type="text"
-              name="username"
-              value={username}
-              onChange={inputHandlerConstructor(
-                setUsername,
-                setIsUsernameValid,
-                usernameFilterConstructor(setIsUsernameUnique)
-              )}
-            />
-            {isValid(username, isUsernameValid)}
-          </div>
-          {isUsernameUnique || <p className={styles.error}>Username is already exist.</p>}
-          {checkError('username') && isUsernameUnique && (
-            <p className={styles.error}>Username is not valid.</p>
-          )}
+          <Input
+            type="text"
+            name="username"
+            value={values.username}
+            onChange={handleChange(usernameFilter)}
+            error={errors.username}
+          />
 
           <h3>Password</h3>
           <p className={styles.desc}>
             Choose a password 8 - 20 characters including at least a letter, a number and a special
             character (!@#$%^&*).
           </p>
-          <div className={styles.input_wrapper}>
-            <input
-              className={styles.text_input}
-              type="password"
-              name="password"
-              value={password}
-              onChange={inputHandlerConstructor(setPassword, setIsPasswordValid, passwordFilter)}
-            />
-            {isValid(password, isPasswordValid)}
-          </div>
-          {checkError('password') && <p className={styles.error}>Password is not valid.</p>}
+          <Input
+            type="password"
+            name="password"
+            value={values.password}
+            onChange={handleChange(passwordFilter)}
+            error={errors.password}
+          />
 
           <h3>Confirm Password</h3>
-          <div className={styles.input_wrapper}>
-            <input
-              className={styles.text_input}
-              type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={inputHandlerConstructor(
-                setConfirmPassword,
-                setIsConfirmPasswordValid,
-                confirmPasswordFilterConstructor(isPasswordValid, password)
-              )}
-            />
-            {isValid(confirmPassword, isConfirmPasswordValid)}
-          </div>
-          {checkError('confirmPassword') && (
-            <p className={styles.error}>Confirm Password is not valid.</p>
-          )}
+          <Input
+            type="password"
+            name="confirmPassword"
+            value={values.confirmPassword}
+            onChange={(e) => {
+              errors.password || handleChange(confirmPasswordFilterConstructor(values.password))(e);
+            }}
+            error={errors.confirmPassword}
+          />
 
           <h3>Email Address</h3>
-          <div className={styles.input_wrapper}>
-            <input
-              className={styles.text_input}
-              type="text"
-              name="email"
-              value={email}
-              onChange={inputHandlerConstructor(
-                setEmail,
-                setIsEmailValid,
-                emailFilterConstructor(setIsEmailUnique)
-              )}
-            />
-            {isValid(email, isEmailValid)}
-          </div>
-          {isEmailUnique || <p className={styles.error}>Email Address is already exist.</p>}
-          {checkError('email') && isEmailUnique && (
-            <p className={styles.error}>Email Address is not valid.</p>
-          )}
+          <Input
+            type="text"
+            name="email"
+            value={values.email}
+            onChange={handleChange(emailFilter)}
+            error={errors.email}
+          />
         </div>
         <div className={styles.sub}>
           <h2>Contact Details</h2>
           <h3>First Name</h3>
-          <input
-            className={styles.text_input}
+          <Input
             type="text"
             name="firstName"
-            value={firstName}
-            onChange={inputHandlerConstructor(setFirstName)}
+            value={values.firstName}
+            onChange={handleChange()}
+            error={errors.firstName}
           />
-          {checkError('firstName') && <p className={styles.error}>First Name is not valid.</p>}
 
           <h3>Last Name</h3>
-          <input
-            className={styles.text_input}
+          <Input
             type="text"
             name="lastName"
-            value={lastName}
-            onChange={inputHandlerConstructor(setLastName)}
+            value={values.lastName}
+            onChange={handleChange()}
+            error={errors.lastName}
           />
-          {checkError('lastName') && <p className={styles.error}>Last Name is not valid.</p>}
 
           <h3>Gender</h3>
           <div className={styles.gender_radio}>
@@ -207,28 +141,25 @@ export default function SignUp() {
             {genderButton('diverse')}
             <label>Gender Diverse</label>
           </div>
-          {checkError('gender') && <p className={styles.error}>Gender is not valid.</p>}
+          <ErrorMessage error={errors.gender} />
 
           <h3>Date of Birth</h3>
-          <input
-            className={styles.text_input}
+          <Input
             type="date"
             name="birthday"
-            value={birthday}
-            onChange={(e) => {
-              setBirthday(e.target.value);
-            }}
+            value={values.birthday}
+            onChange={handleChange()}
+            error={errors.birthday}
           />
+
           <h3>Phone Number</h3>
           <div className={styles.phone_number}>
             <select
-              name="numberPrefix"
-              value={phoneNumberPrefix}
-              onChange={(e) => {
-                setPhoneNumberPrefix(e.target.value);
-              }}
+              name="phoneNumberPrefix"
+              value={values.phoneNumberPrefix}
+              onChange={handleChange()}
             >
-              {numberPrefixList.map((n) => (
+              {phoneNumberPrefixList.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
@@ -237,24 +168,25 @@ export default function SignUp() {
             <input
               type="number"
               step="1"
-              name="number"
-              value={phoneNumber}
-              onChange={(e) => {
-                setPhoneNumber(e.target.value.toString());
-              }}
+              name="phoneNumber"
+              value={values.phoneNumber}
+              onChange={handleChange()}
             />
           </div>
-          {checkError('phoneNumber') && <p className={styles.error}>Phone Number is not valid.</p>}
+          <ErrorMessage error={errors.phoneNumber} />
 
           <h3>Location (closest district)</h3>
           <div className={styles.location}>
             <select
               name="district"
-              value={district}
+              value={values.district}
               onChange={(e) => {
-                const districtValue = e.target.value! as District;
-                setDistrict(districtValue);
-                setSuburb(suburbMap[districtValue][0]);
+                const newDistrict = e.target.value as District;
+                setValues({
+                  ...values,
+                  district: newDistrict,
+                  suburb: suburbMap[newDistrict][0],
+                });
               }}
             >
               {districtList.map((n) => (
@@ -263,14 +195,8 @@ export default function SignUp() {
                 </option>
               ))}
             </select>
-            <select
-              name="suburb"
-              value={suburb}
-              onChange={(e) => {
-                setSuburb(e.target.value);
-              }}
-            >
-              {suburbMap[district].map((n) => (
+            <select name="suburb" value={values.suburb} onChange={handleChange()}>
+              {suburbMap[values.district].map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
@@ -279,7 +205,6 @@ export default function SignUp() {
           </div>
           <div className={styles.submit_button_wrapper}>
             <input className={styles.submit_button} type="submit" value="Create Your Account" />
-            {isSubmitValid || <img className={styles.valid_icon} src="/img/no.svg" />}
           </div>
         </div>
       </form>

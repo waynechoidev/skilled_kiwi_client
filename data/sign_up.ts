@@ -1,4 +1,4 @@
-export const numberPrefixList = [
+export const phoneNumberPrefixList = [
   '020',
   '021',
   '022',
@@ -32,7 +32,6 @@ export const districtList = [
   'Otago',
   'Southland',
 ] as const; // make the array read only to make a type District
-
 export const suburbMap = {
   'Auckland': [
     'Albany',
@@ -177,21 +176,34 @@ export const suburbMap = {
   ],
 } as const;
 
+export type Suburb = typeof suburbMap[District][number];
 export type District = typeof districtList[number];
 
-export const compulsoryParameterList = [
-  'username',
-  'password',
-  'confirmPassword',
-  'email',
-  'firstName',
-  'lastName',
-  'gender',
-  'birthday',
-  'phoneNumberPrefix',
-  'phoneNumber',
-  'district',
-  'suburb',
-] as const;
-
-export type CompulsoryParameter = typeof compulsoryParameterList[number];
+export type SignUpValues = {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  gender: 'male' | 'female' | 'diverse' | '';
+  birthday: string;
+  phoneNumberPrefix: string;
+  phoneNumber: string;
+  district: District;
+  suburb: Suburb;
+};
+export type SignUpErrorValues = {
+  username?: string;
+  password?: string;
+  confirmPassword?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  gender?: string;
+  birthday?: string;
+  phoneNumberPrefix?: string;
+  phoneNumber?: string;
+  district?: string;
+  suburb?: string;
+};
