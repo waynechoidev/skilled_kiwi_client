@@ -1,4 +1,4 @@
-import { SignUpErrorValues, SignUpValues } from './../data/sign_up';
+import { SignUpErrorValues, SignUpValues } from '../data/sign_up';
 const urlBase = 'http://localhost:8080';
 
 ///

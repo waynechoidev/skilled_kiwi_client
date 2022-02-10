@@ -18,7 +18,7 @@ import {
   signUp,
   usernameFilter,
   validateSignUp,
-} from '../service/sign_up';
+} from '../utils/sign_up';
 import styles from '../styles/sign_up.module.css';
 
 export default function SignUp() {

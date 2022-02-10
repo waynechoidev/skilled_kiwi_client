@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { authState } from '../../../atoms/is_authorized';
-import AuthService from '../../../service/auth';
+import AuthService from '../../../modules/auth';
 import styles from './style.module.css';
 
 interface IProps {

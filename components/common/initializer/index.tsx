@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { authState } from '../../../atoms/is_authorized';
 import { tokenState } from '../../../atoms/token';
-import AuthService from '../../../service/auth';
+import AuthService from '../../../modules/auth';
 
 interface IProps {
   auth: AuthService;
