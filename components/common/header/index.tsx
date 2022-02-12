@@ -26,7 +26,7 @@ export default function Header({ auth }: IProps) {
       <div className={styles.logo_area}>
         <img src="/img/logo.png" />
         <div className={styles.auth}>
-          {!isAuthorized ? (
+          {isAuthorized === 'no' ? (
             <>
               <span
                 onClick={() => {

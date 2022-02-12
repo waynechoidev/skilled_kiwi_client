@@ -20,7 +20,6 @@ export default function SignIn({ auth }: IProps) {
 
   const router = useRouter();
   const { back_to } = router.query;
-  console.log(back_to);
   function goBack() {
     let target: string | undefined;
     if (typeof back_to === 'object') {
@@ -28,7 +27,7 @@ export default function SignIn({ auth }: IProps) {
     } else {
       target = back_to;
     }
-    router.push(target ? target : '/');
+    router.push(target ? `/${target}` : '/');
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -50,7 +49,7 @@ export default function SignIn({ auth }: IProps) {
   };
 
   useEffect(() => {
-    if (isAuthorized) {
+    if (isAuthorized === 'yes') {
       goBack();
     }
   }, []);
