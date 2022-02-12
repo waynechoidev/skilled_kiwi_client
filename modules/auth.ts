@@ -20,14 +20,15 @@ interface SignResult {
 export default class AuthService {
   private date!: Date;
   private setToken!: SetterOrUpdater<string>;
-  private setIsAuthorized!: SetterOrUpdater<boolean>;
+  private setIsAuthorized!: SetterOrUpdater<string>;
   private window!: Window;
   private urlBase: string;
 
-  public accessToken: string | undefined;
-  public refreshToken: string | undefined;
-  public expiredTime: string | undefined;
-  public userId: string | undefined;
+  private accessToken?: string;
+  private refreshToken?: string;
+  private expiredTime?: string;
+  private userId?: string;
+  private stored?: 'localStorage' | 'sessionStorage';
 
   constructor() {
     this.urlBase = 'http://localhost:8080';
@@ -35,7 +36,7 @@ export default class AuthService {
 
   async init(
     setToken: SetterOrUpdater<string>,
-    setIsAuthorized: SetterOrUpdater<boolean>,
+    setIsAuthorized: SetterOrUpdater<string>,
     window: Window,
     date: Date
   ) {
@@ -43,16 +44,18 @@ export default class AuthService {
     this.setIsAuthorized = setIsAuthorized;
     this.window = window;
     this.date = date;
-    this.getMembersFromStorage();
+    this.setMembersFromStorage();
 
     if (this.expiredTime) {
       const isAuthorized = !this.isAccessTokenExpired(this.expiredTime); // if it is expired, it is not authorized.
       if (isAuthorized) {
         this.setToken(this.accessToken!);
-        this.setIsAuthorized(isAuthorized);
+        this.setIsAuthorized('yes');
       } else {
         await this.reIssueToken(this.userId!, this.refreshToken!);
       }
+    } else {
+      this.setIsAuthorized('no');
     }
   }
 
@@ -87,7 +90,7 @@ export default class AuthService {
     this.refreshToken = undefined;
     this.expiredTime = undefined;
     this.userId = undefined;
-    this.setIsAuthorized(false);
+    this.setIsAuthorized('no');
     this.setToken('');
   }
 
@@ -104,7 +107,8 @@ export default class AuthService {
       }),
     };
     const response = await fetch(`${this.urlBase}/auth/reissue_token`, requestOptions);
-    return this.setTokenFromResponse(response);
+    const result: SignResponse = { status: response.status, ...(await response.json()) };
+    return this.setTokenFromResponse(result);
   }
 
   private isAccessTokenExpired(expiredTime?: string) {
@@ -118,29 +122,22 @@ export default class AuthService {
       return false;
     }
   }
-  private getMembersFromStorage() {
+  private setMembersFromStorage() {
     const storage =
       window.localStorage.getItem('stored') === 'localStorage' ? 'localStorage' : 'sessionStorage';
 
+    this.stored = storage;
     this.accessToken = window[storage].getItem('accessToken')!;
     this.refreshToken = window[storage].getItem('refreshToken')!;
     this.expiredTime = window[storage].getItem('expiredTime')!;
     this.userId = window[storage].getItem('userId')!;
   }
-  private setMembersToStorage(
-    accessToken: string,
-    refreshToken: string,
-    expiredTime: string,
-    userId: string,
-    isChecked?: boolean
-  ) {
-    const storage = isChecked ? 'localStorage' : 'sessionStorage';
-
-    window.localStorage.setItem('stored', storage);
-    window[storage].setItem('accessToken', accessToken);
-    window[storage].setItem('refreshToken', refreshToken);
-    window[storage].setItem('expiredTime', expiredTime);
-    window[storage].setItem('userId', userId);
+  private setStorageFromMembers() {
+    window.localStorage.setItem('stored', this.stored!);
+    window[this.stored!].setItem('accessToken', this.accessToken!);
+    window[this.stored!].setItem('refreshToken', this.refreshToken!);
+    window[this.stored!].setItem('expiredTime', this.expiredTime!);
+    window[this.stored!].setItem('userId', this.userId!);
   }
   private setTokenFromResponse(result: SignResponse, isChecked?: boolean): SignResult {
     if (result.status === 201) {
@@ -148,17 +145,14 @@ export default class AuthService {
       this.refreshToken = result.refreshToken;
       this.expiredTime = (this.date!.getTime() / 1000 + result.expiresIn!)?.toString(); //cannot set int in storage
       this.userId = result.userId?.toString(); //cannot set int in storage
+      if (typeof isChecked === 'boolean') {
+        this.stored = isChecked ? 'localStorage' : 'sessionStorage';
+      }
 
-      this.setMembersToStorage(
-        this.accessToken!,
-        this.refreshToken!,
-        this.expiredTime!,
-        this.userId!,
-        isChecked
-      );
+      this.setStorageFromMembers();
 
       this.setToken(this.accessToken!);
-      this.setIsAuthorized(true);
+      this.setIsAuthorized('yes');
     } else {
       console.error(result.message);
     }

@@ -7,10 +7,9 @@ import { authState } from '../atoms/auth';
 
 interface IProps {
   auth: AuthService;
-  date: Date;
 }
 
-export default function SignIn({ auth, date }: IProps) {
+export default function SignIn({ auth }: IProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
@@ -20,6 +19,18 @@ export default function SignIn({ auth, date }: IProps) {
   const isAuthorized = useRecoilValue(authState);
 
   const router = useRouter();
+  const { back_to } = router.query;
+  console.log(back_to);
+  function goBack() {
+    let target: string | undefined;
+    if (typeof back_to === 'object') {
+      target = back_to[0];
+    } else {
+      target = back_to;
+    }
+    router.push(target ? target : '/');
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsHideError(true);
     e.preventDefault();
@@ -28,7 +39,7 @@ export default function SignIn({ auth, date }: IProps) {
     setPassword('');
 
     if (result.status > 199 && result.status < 300) {
-      router.back();
+      goBack();
     } else if (result.status > 399) {
       setErrorMsg(result.message!);
       setIsHideError(false);
@@ -40,7 +51,7 @@ export default function SignIn({ auth, date }: IProps) {
 
   useEffect(() => {
     if (isAuthorized) {
-      router.push('/');
+      goBack();
     }
   }, []);
 
