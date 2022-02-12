@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import AuthService from '../modules/auth';
 import styles from '../styles/sign_in.module.css';
 import { useRecoilValue } from 'recoil';
-import { authState } from '../atoms/is_authorized';
+import { authState } from '../atoms/auth';
 
 interface IProps {
   auth: AuthService;
@@ -28,7 +28,7 @@ export default function SignIn({ auth, date }: IProps) {
     setPassword('');
 
     if (result.status > 199 && result.status < 300) {
-      router.push('/');
+      router.back();
     } else if (result.status > 399) {
       setErrorMsg(result.message!);
       setIsHideError(false);
