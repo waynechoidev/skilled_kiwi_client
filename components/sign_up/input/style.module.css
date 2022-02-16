@@ -1,20 +1,11 @@
 .input_wrapper {
   display: flex;
   align-items: center;
-}
-.text_input {
-  margin: 5px 0;
-  padding: 5px;
-  width: 60%;
+  width: 100%;
+  max-width: 320px;
 }
 
 .valid_icon {
   margin: 5px;
   height: 100%;
-}
-
-.error {
-  color: #ff4848;
-  margin: 0;
-  margin-bottom: 10px;
 }

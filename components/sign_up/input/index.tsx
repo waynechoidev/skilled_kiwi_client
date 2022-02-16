@@ -1,5 +1,6 @@
 import React, { ChangeEventHandler, HTMLInputTypeAttribute } from 'react';
-import ErrorMessage from '../error_message';
+import ErrorMessage from '../../common/error_message';
+import Input from '../../common/input';
 import styles from './style.module.css';
 
 interface IProps {
@@ -9,7 +10,7 @@ interface IProps {
   onChange: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
   error?: string;
 }
-export default function Input({ type, name, value, onChange, error }: IProps) {
+export default function SignUpInput({ type, name, value, onChange, error }: IProps) {
   const isValid = (item: string, error?: string) => {
     switch (name) {
       case 'username':
@@ -25,13 +26,7 @@ export default function Input({ type, name, value, onChange, error }: IProps) {
   return (
     <div>
       <div className={styles.input_wrapper}>
-        <input
-          className={styles.text_input}
-          type={type}
-          name={name}
-          value={value}
-          onChange={onChange}
-        />
+        <Input type={type} name={name} value={value} onChange={onChange} />
         {isValid(value, error)}
       </div>
       <ErrorMessage error={error} />

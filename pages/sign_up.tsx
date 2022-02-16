@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import ErrorMessage from '../components/sign_up/error_message';
-import Input from '../components/sign_up/input';
+import ErrorMessage from '../components/common/error_message';
+import SignUpInput from '../components/sign_up/input';
 import {
   districtList,
   phoneNumberPrefixList,
@@ -9,8 +9,8 @@ import {
   District,
   SignUpValues,
   SignUpErrorValues,
-} from '../data/sign_up';
-import useForm from '../hooks/use_form';
+} from '../data/user';
+import useForm from '../utils/hooks/use_form';
 import {
   confirmPasswordFilterConstructor,
   emailFilter,
@@ -71,7 +71,7 @@ export default function SignUp() {
           <h2>Account Details</h2>
           <h3>Username</h3>
           <p className={styles.desc}>Choose a username 6 - 20 characters long.</p>
-          <Input
+          <SignUpInput
             type="text"
             name="username"
             value={values.username}
@@ -84,7 +84,7 @@ export default function SignUp() {
             Choose a password 8 - 20 characters including at least a letter, a number and a special
             character (!@#$%^&*).
           </p>
-          <Input
+          <SignUpInput
             type="password"
             name="password"
             value={values.password}
@@ -93,7 +93,7 @@ export default function SignUp() {
           />
 
           <h3>Confirm Password</h3>
-          <Input
+          <SignUpInput
             type="password"
             name="confirmPassword"
             value={values.confirmPassword}
@@ -104,7 +104,7 @@ export default function SignUp() {
           />
 
           <h3>Email Address</h3>
-          <Input
+          <SignUpInput
             type="text"
             name="email"
             value={values.email}
@@ -115,7 +115,7 @@ export default function SignUp() {
         <div className={styles.sub}>
           <h2>Contact Details</h2>
           <h3>First Name</h3>
-          <Input
+          <SignUpInput
             type="text"
             name="firstName"
             value={values.firstName}
@@ -124,7 +124,7 @@ export default function SignUp() {
           />
 
           <h3>Last Name</h3>
-          <Input
+          <SignUpInput
             type="text"
             name="lastName"
             value={values.lastName}
@@ -144,7 +144,7 @@ export default function SignUp() {
           <ErrorMessage error={errors.gender} />
 
           <h3>Date of Birth</h3>
-          <Input
+          <SignUpInput
             type="date"
             name="birthday"
             value={values.birthday}

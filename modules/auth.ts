@@ -108,6 +108,9 @@ export default class AuthService {
     };
     const response = await fetch(`${this.urlBase}/auth/reissue_token`, requestOptions);
     const result: SignResponse = { status: response.status, ...(await response.json()) };
+    if (result.status === 401) {
+      this.signOut();
+    }
     return this.setTokenFromResponse(result);
   }
 

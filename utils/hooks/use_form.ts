@@ -15,7 +15,8 @@ function useForm<Status, ErrorStatus>({
   const [errors, setErrors] = useState<ErrorStatus>({} as ErrorStatus);
   const [isLoading, setIsLoading] = useState(false);
   const handleChange =
-    (filter?: Filter) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    (filter?: Filter) =>
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
       setValues({ ...values, [name]: value });
       if (filter) {
@@ -46,6 +47,7 @@ function useForm<Status, ErrorStatus>({
     values,
     setValues,
     errors,
+    setErrors,
     handleChange,
     submitHandle,
   };

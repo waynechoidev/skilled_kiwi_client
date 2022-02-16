@@ -13,11 +13,12 @@ export default function Header({ auth }: IProps) {
   const isAuthorized = useRecoilValue(authState);
   interface menu {
     name: string;
+    src: string;
   }
   const menus: menu[] = [
-    { name: 'Find Requests' },
-    { name: 'Post a Request' },
-    { name: 'Life Hack' },
+    { name: 'Find Requests', src: '' },
+    { name: 'Post a Request', src: '/post_request' },
+    { name: 'Life Hack', src: '' },
   ];
 
   const router = useRouter();
@@ -57,7 +58,14 @@ export default function Header({ auth }: IProps) {
       <div className={styles.menu_bar}>
         <div className={styles.menu_wrapper}>
           {menus.map((menu, i) => (
-            <span key={i}>{menu.name}</span>
+            <span
+              key={i}
+              onClick={() => {
+                router.push(menu.src);
+              }}
+            >
+              {menu.name}
+            </span>
           ))}
         </div>
       </div>
