@@ -58,6 +58,7 @@ export default function PostRequest() {
       });
       values.images = imageList;
       submitRequest(values, token);
+      console.log(values);
     },
     validate: validateSubmitRequest,
   });

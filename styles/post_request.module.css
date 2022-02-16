@@ -42,7 +42,6 @@
 }
 .form select {
   width: 100%;
-  max-width: 540px;
   display: flex;
   align-items: center;
   margin: 5px 0 1rem 0;
@@ -51,7 +50,6 @@
 
 .location {
   width: 100%;
-  max-width: 540px;
   margin: 5px 0 1rem 0;
   display: flex;
   justify-content: space-between;
@@ -75,7 +73,6 @@
 
 .image_item {
   width: 100%;
-  max-width: 800px;
   display: flex;
   justify-content: space-between;
   padding: 10px;
@@ -98,9 +95,9 @@
 .submit_button_wrapper {
   display: flex;
   align-items: center;
-  margin-top: 20px;
 }
 .submit_button {
-  width: 200px;
+  width: 100%;
+  margin: 0 auto;
   padding: 10px 20px;
 }
