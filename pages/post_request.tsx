@@ -1,3 +1,7 @@
+//ToDO
+//set routing after submit
+//refactor logic to modularize
+
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -37,6 +41,7 @@ export default function PostRequest() {
   const router = useRouter();
 
   const [imageError, setImageError] = useState('');
+  const [isImageLoading, setIsImageUploading] = useState(false);
   const [images, setImages] = useState<Image[]>([]);
 
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
@@ -51,18 +56,12 @@ export default function PostRequest() {
       detail: '',
       images: [],
     },
-    onSubmit: () => {
-      const imageList: string[] = [];
-      images.map(async (image) => {
-        imageList.push(await uploadImage(image.file));
-      });
-      values.images = imageList;
-      submitRequest(values, token);
-      console.log(values);
+    onSubmit: async () => {
+      const result = await submitRequest(values, token);
+      console.log(result);
     },
     validate: validateSubmitRequest,
   });
-
   useEffect(() => {
     if (isAuthorized === 'no') {
       router.push('/sign_in?back_to=post_request');
@@ -135,19 +134,17 @@ export default function PostRequest() {
 
         <h2>Images to describe your request</h2>
         <div className={styles.image_upload}>
-          <button>
-            <label htmlFor="image_uploads">Upload (max file size: 10 MB)</label>
-          </button>
+          <label htmlFor="image_uploads">Upload (max file size: 10 MB)</label>
           <ErrorMessage error={imageError} />
         </div>
 
         {images.map((img, i) => (
           <div className={styles.image_item} key={i}>
             <span className={styles.image_item_name}>{img.name}</span>
-            <span className={styles.image_item_size}>{img.size}</span>{' '}
+            <span className={styles.image_item_size}>{img.size}</span>
             <span
               className={styles.image_item_delete}
-              onClick={() => {
+              onClick={async () => {
                 const newImages = [...images];
                 newImages.splice(i, 1);
                 setImages(newImages);
@@ -157,6 +154,11 @@ export default function PostRequest() {
             </span>
           </div>
         ))}
+        {isImageLoading && (
+          <div className={styles.spinner}>
+            <img src="/img/spinner.gif" />
+          </div>
+        )}
         <input
           name="imgUpload"
           type="file"
@@ -166,6 +168,8 @@ export default function PostRequest() {
           required={false}
           accept="image/*"
           onChange={async (e) => {
+            e.preventDefault();
+            setIsImageUploading(true);
             const file = e.target.files![0];
             if (file) {
               if (images.find((x) => x.name === file.name)) {
@@ -179,10 +183,12 @@ export default function PostRequest() {
               } else {
                 setImageError('');
                 const newImage: Image = { file, name: file.name, size: calculateByte(file.size) };
+                values.images = [...values.images, await uploadImage(file)];
                 setImages([...images, newImage]);
               }
             }
             e.target.value = '';
+            setIsImageUploading(false);
           }}
         />
         <div className={styles.submit_button_wrapper}>

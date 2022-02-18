@@ -11,8 +11,8 @@ export async function submitRequest(values: RequestValues, token: string) {
     body: JSON.stringify(values),
   };
 
-  const response = await fetch('http://localhost:8080/auth/sign_up', requestOptions);
-  return response.status;
+  const response = await fetch('http://localhost:8080/jobs', requestOptions);
+  return response.json();
 }
 
 export function titleFilter(title: string) {

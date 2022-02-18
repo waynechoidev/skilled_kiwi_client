@@ -65,10 +65,13 @@
   flex-direction: row;
   align-items: center;
 }
-.image_upload button {
-  padding: 5px 10px;
+.image_upload label {
+  padding: 7px 10px;
   margin: 5px 10px 5px 0;
   text-align: center;
+  border: 1px solid rgb(118, 118, 118);
+  background-color: rgb(239, 239, 239);
+  border-radius: 2px;
 }
 
 .image_item {
@@ -90,6 +93,13 @@
   flex: 1;
   text-align: right;
   cursor: pointer;
+}
+
+.spinner {
+  text-align: center;
+}
+.spinner img {
+  width: 60px;
 }
 
 .submit_button_wrapper {
