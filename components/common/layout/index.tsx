@@ -8,13 +8,13 @@ import styles from './style.module.css';
 interface IProps {
   children: ReactChild;
   date: Date;
-  authService: AuthService;
+  auth: AuthService;
 }
 
-export default function Layout({ children, date, authService }: IProps) {
+export default function Layout({ children, date, auth }: IProps) {
   return (
     <div className={styles.container}>
-      <Header authService={authService} />
+      <Header auth={auth} />
       <section className={styles.contents}>{children}</section>
       <Footer date={date} />
     </div>

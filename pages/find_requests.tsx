@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import RequestService from '../utils/modules/request';
+import React from 'react';
+import useSWR from 'swr';
+import { fetcher } from '../utils/common';
 
 interface IProps {
-  requestService: RequestService;
+  urlBase: string;
 }
 
-export default function FindRequests() {
-  const [requests, getRequests] = useState();
-  useEffect(() => {}, []);
+export default function FindRequests({ urlBase }: IProps) {
+  const { data, error } = useSWR(`${urlBase}/jobs`, fetcher);
+  console.log(data);
 
   return <div>FindRequests</div>;
 }

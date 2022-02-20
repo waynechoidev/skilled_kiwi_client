@@ -6,10 +6,10 @@ import AuthService from '../../../utils/modules/auth';
 import styles from './style.module.css';
 
 interface IProps {
-  authService: AuthService;
+  auth: AuthService;
 }
 
-export default function Header({ authService }: IProps) {
+export default function Header({ auth }: IProps) {
   const isAuthorized = useRecoilValue(authState);
   interface menu {
     name: string;
@@ -52,7 +52,7 @@ export default function Header({ authService }: IProps) {
           ) : (
             <span
               onClick={() => {
-                authService.signOut();
+                auth.signOut();
               }}
             >
               Sign Out

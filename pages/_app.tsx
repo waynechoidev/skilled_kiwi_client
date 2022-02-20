@@ -5,23 +5,21 @@ import { useRouter } from 'next/router';
 import AuthService from '../utils/modules/auth';
 import { RecoilRoot } from 'recoil';
 import Initializer from '../components/common/initializer';
-import RequestService from '../utils/modules/request';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;
   const date = new Date();
   const urlBase = 'http://localhost:8080';
-  const authService = AuthService.getInstance(urlBase);
-  const requestService = RequestService.getInstance(urlBase);
+  const auth = AuthService.getInstance(urlBase);
 
   return (
     <RecoilRoot>
-      <Initializer authService={authService} date={date} />
+      <Initializer auth={auth} date={date} />
       {pathName === '/sign_in' ? (
-        <Component {...pageProps} authService={authService} date={date} />
+        <Component {...pageProps} auth={auth} date={date} />
       ) : (
-        <Layout date={date} authService={authService}>
-          <Component {...pageProps} authService={authService} requestService={requestService} />
+        <Layout date={date} auth={auth}>
+          <Component {...pageProps} auth={auth} urlBase={urlBase} />
         </Layout>
       )}
     </RecoilRoot>

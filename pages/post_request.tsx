@@ -14,14 +14,13 @@ import useForm from '../utils/hooks/use_form';
 import styles from '../styles/post_request.module.css';
 import * as Utils from '../utils/post_request';
 import * as UserData from '../data/user';
-import RequestService from '../utils/modules/request';
 import { calculateByte } from '../utils/common';
 
 interface IProps {
-  requestService: RequestService;
+  urlBase: string;
 }
 
-export default function PostRequest({ requestService }: IProps) {
+export default function PostRequest({ urlBase }: IProps) {
   const isAuthorized = useRecoilValue(authState);
   const token = useRecoilValue(tokenState);
   const router = useRouter();
@@ -43,7 +42,7 @@ export default function PostRequest({ requestService }: IProps) {
       images: [],
     },
     onSubmit: async () => {
-      const result = await requestService.postRequest(values, token);
+      const result = await Utils.postRequest(`${urlBase}/jobs`, values, token);
       console.log(result);
     },
     validate: Utils.validateSubmitRequest,

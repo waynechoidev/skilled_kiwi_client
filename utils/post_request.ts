@@ -47,3 +47,17 @@ export async function uploadImage(file: File) {
 
   return (await response).url;
 }
+export async function postRequest(url: string, values: RequestValues, token: string) {
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+  myHeaders.append('Authorization', `Bearer ${token}`);
+
+  const requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify(values),
+  };
+
+  const response = await fetch(url, requestOptions);
+  return response.json();
+}

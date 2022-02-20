@@ -6,3 +6,5 @@ export function calculateByte(bytes: number) {
   if (!e) return '0 ' + s[0];
   else return (bytes / Math.pow(1024, Math.floor(e))).toFixed(2) + ' ' + s[e];
 }
+
+export const fetcher = (url: string) => fetch(url).then((res) => res.json());
