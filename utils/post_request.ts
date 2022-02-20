@@ -1,20 +1,5 @@
 import { RequestErrorValues, RequestValues } from './../data/post_request';
 
-export async function submitRequest(values: RequestValues, token: string) {
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('Authorization', `Bearer ${token}`);
-
-  const requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: JSON.stringify(values),
-  };
-
-  const response = await fetch('http://localhost:8080/jobs', requestOptions);
-  return response.json();
-}
-
 export function titleFilter(title: string) {
   if (!title) {
     return 'Please fill up the title.';

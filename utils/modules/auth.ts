@@ -23,13 +23,14 @@ export default class AuthService {
   private setToken!: SetterOrUpdater<string>;
   private setIsAuthorized!: SetterOrUpdater<string>;
   private window!: Window;
-  private urlBase: string;
 
   private accessToken?: string;
   private refreshToken?: string;
   private expiredTime?: string;
   private userId?: string;
   private stored?: 'localStorage' | 'sessionStorage';
+
+  private urlBase: string;
   static _instance: AuthService;
 
   private constructor(urlBase: string) {

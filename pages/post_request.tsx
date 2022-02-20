@@ -9,44 +9,30 @@ import { authState } from '../atoms/auth';
 import { tokenState } from '../atoms/token';
 import ErrorMessage from '../components/common/error_message';
 import RequestInput from '../components/post_request/input';
-import { jobCategoryList, RequestErrorValues, RequestValues } from '../data/post_request';
+import * as Data from '../data/post_request';
 import useForm from '../utils/hooks/use_form';
 import styles from '../styles/post_request.module.css';
-import {
-  detailFilter,
-  submitRequest,
-  titleFilter,
-  uploadImage,
-  validateSubmitRequest,
-} from '../utils/post_request';
-import { District, districtList, suburbMap } from '../data/user';
+import * as Utils from '../utils/post_request';
+import * as UserData from '../data/user';
+import RequestService from '../utils/modules/request';
+import { calculateByte } from '../utils/common';
 
-type Image = {
-  file: File;
-  name: string;
-  size: string;
-};
-function calculateByte(bytes: number) {
-  const s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-
-  const e = Math.floor(Math.log(bytes) / Math.log(1024));
-
-  if (!e) return '0 ' + s[0];
-  else return (bytes / Math.pow(1024, Math.floor(e))).toFixed(2) + ' ' + s[e];
+interface IProps {
+  request: RequestService;
 }
 
-export default function PostRequest() {
+export default function PostRequest({ request }: IProps) {
   const isAuthorized = useRecoilValue(authState);
   const token = useRecoilValue(tokenState);
   const router = useRouter();
 
   const [imageError, setImageError] = useState('');
   const [isImageLoading, setIsImageUploading] = useState(false);
-  const [images, setImages] = useState<Image[]>([]);
+  const [images, setImages] = useState<Data.Image[]>([]);
 
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
-    RequestValues,
-    RequestErrorValues
+    Data.RequestValues,
+    Data.RequestErrorValues
   >({
     initialValues: {
       title: '',
@@ -57,10 +43,10 @@ export default function PostRequest() {
       images: [],
     },
     onSubmit: async () => {
-      const result = await submitRequest(values, token);
+      const result = await request.postRequest(values, token);
       console.log(result);
     },
-    validate: validateSubmitRequest,
+    validate: Utils.validateSubmitRequest,
   });
   useEffect(() => {
     if (isAuthorized === 'no') {
@@ -80,7 +66,7 @@ export default function PostRequest() {
           type="text"
           name="title"
           value={values.title}
-          onChange={handleChange(titleFilter)}
+          onChange={handleChange(Utils.titleFilter)}
           error={errors.title}
         />
 
@@ -90,22 +76,22 @@ export default function PostRequest() {
             name="district"
             value={values.district}
             onChange={(e) => {
-              const newDistrict = e.target.value as District;
+              const newDistrict = e.target.value as UserData.District;
               setValues({
                 ...values,
                 district: newDistrict,
-                suburb: suburbMap[newDistrict][0],
+                suburb: UserData.suburbMap[newDistrict][0],
               });
             }}
           >
-            {districtList.map((n) => (
+            {UserData.districtList.map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
             ))}
           </select>
           <select name="suburb" value={values.suburb} onChange={handleChange()}>
-            {suburbMap[values.district].map((n) => (
+            {UserData.suburbMap[values.district].map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
@@ -118,14 +104,14 @@ export default function PostRequest() {
           <textarea
             name="detail"
             value={values.detail}
-            onChange={handleChange(detailFilter)}
+            onChange={handleChange(Utils.detailFilter)}
           ></textarea>
           <ErrorMessage error={errors.detail} />
         </div>
 
         <h2>Category</h2>
         <select name="category" value={values.category} onChange={handleChange()}>
-          {jobCategoryList.map((n) => (
+          {Data.jobCategoryList.map((n) => (
             <option key={n} value={n}>
               {n}
             </option>
@@ -182,8 +168,12 @@ export default function PostRequest() {
                 setImageError('Max number of image is 5.');
               } else {
                 setImageError('');
-                const newImage: Image = { file, name: file.name, size: calculateByte(file.size) };
-                values.images = [...values.images, await uploadImage(file)];
+                const newImage: Data.Image = {
+                  file,
+                  name: file.name,
+                  size: calculateByte(file.size),
+                };
+                values.images = [...values.images, await Utils.uploadImage(file)];
                 setImages([...images, newImage]);
               }
             }

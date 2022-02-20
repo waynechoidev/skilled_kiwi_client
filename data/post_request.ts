@@ -22,3 +22,9 @@ export type RequestErrorValues = {
   title?: string;
   detail?: string;
 };
+
+export type Image = {
+  file: File;
+  name: string;
+  size: string;
+};
