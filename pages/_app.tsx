@@ -11,17 +11,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;
   const date = new Date();
   const urlBase = 'http://localhost:8080';
-  const auth = AuthService.getInstance(urlBase);
-  const request = RequestService.getInstance(urlBase);
+  const authService = AuthService.getInstance(urlBase);
+  const requestService = RequestService.getInstance(urlBase);
 
   return (
     <RecoilRoot>
-      <Initializer auth={auth} date={date} />
+      <Initializer authService={authService} date={date} />
       {pathName === '/sign_in' ? (
-        <Component {...pageProps} auth={auth} date={date} />
+        <Component {...pageProps} authService={authService} date={date} />
       ) : (
-        <Layout date={date} auth={auth}>
-          <Component {...pageProps} auth={auth} request={request} />
+        <Layout date={date} authService={authService}>
+          <Component {...pageProps} authService={authService} requestService={requestService} />
         </Layout>
       )}
     </RecoilRoot>

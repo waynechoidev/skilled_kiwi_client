@@ -9,10 +9,10 @@ import styles from '../styles/sign_up.module.css';
 import AuthService from '../utils/modules/auth';
 
 interface IProps {
-  auth: AuthService;
+  authService: AuthService;
 }
 
-export default function SignUp({ auth }: IProps) {
+export default function SignUp({ authService }: IProps) {
   const router = useRouter();
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
     Data.SignUpValues,
@@ -49,7 +49,7 @@ export default function SignUp({ auth }: IProps) {
   };
 
   async function handleSubmit(values: Data.SignUpValues) {
-    const result = await auth.signUp(values);
+    const result = await authService.signUp(values);
     if (result === 201) {
       router.push('/');
     }

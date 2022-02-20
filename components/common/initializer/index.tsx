@@ -5,15 +5,15 @@ import { tokenState } from '../../../atoms/token';
 import AuthService from '../../../utils/modules/auth';
 
 interface IProps {
-  auth: AuthService;
+  authService: AuthService;
   date: Date;
 }
 
-export default function Initializer({ auth, date }: IProps) {
+export default function Initializer({ authService, date }: IProps) {
   const [token, setToken] = useRecoilState(tokenState);
   const [isAuthorized, setIsAuthorized] = useRecoilState(authState);
   useEffect(() => {
-    auth.init(setToken, setIsAuthorized, window, date);
+    authService.init(setToken, setIsAuthorized, window, date);
   }, []);
   return <></>;
 }

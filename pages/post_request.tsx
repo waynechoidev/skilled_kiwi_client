@@ -18,10 +18,10 @@ import RequestService from '../utils/modules/request';
 import { calculateByte } from '../utils/common';
 
 interface IProps {
-  request: RequestService;
+  requestService: RequestService;
 }
 
-export default function PostRequest({ request }: IProps) {
+export default function PostRequest({ requestService }: IProps) {
   const isAuthorized = useRecoilValue(authState);
   const token = useRecoilValue(tokenState);
   const router = useRouter();
@@ -43,7 +43,7 @@ export default function PostRequest({ request }: IProps) {
       images: [],
     },
     onSubmit: async () => {
-      const result = await request.postRequest(values, token);
+      const result = await requestService.postRequest(values, token);
       console.log(result);
     },
     validate: Utils.validateSubmitRequest,
