@@ -77,19 +77,6 @@ export async function validateSignUp(values: SignUpValues) {
   return errors;
 }
 
-export async function signUp(values: SignUpValues) {
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-
-  const requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: JSON.stringify(values),
-  };
-
-  const response = await fetch('http://localhost:8080/auth/sign_up', requestOptions);
-  return response.status;
-}
 async function checkValidUsername(username: string): Promise<boolean> {
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');

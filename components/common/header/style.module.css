@@ -19,6 +19,7 @@
 .logo_area img {
   padding: 0 20px;
   height: 40px;
+  cursor: pointer;
 }
 .auth span {
   padding: 0 20px;
@@ -43,4 +44,5 @@
 .menu_wrapper span {
   padding: 0 20px;
   color: #fff;
+  cursor: pointer;
 }

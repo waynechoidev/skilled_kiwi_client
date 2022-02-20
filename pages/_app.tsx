@@ -2,15 +2,14 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '../components/common/layout';
 import { useRouter } from 'next/router';
-import AuthService from '../modules/auth';
+import AuthService from '../utils/modules/auth';
 import { RecoilRoot } from 'recoil';
-import { useState } from 'react';
 import Initializer from '../components/common/initializer';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;
   const date = new Date();
-  const [auth] = useState(new AuthService());
+  const auth = AuthService.getInstance('http://localhost:8080');
 
   return (
     <RecoilRoot>

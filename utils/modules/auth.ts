@@ -1,4 +1,5 @@
 import { SetterOrUpdater } from 'recoil';
+import { SignUpValues } from '../../data/user';
 
 interface SignResponse {
   status: number;
@@ -29,12 +30,13 @@ export default class AuthService {
   private expiredTime?: string;
   private userId?: string;
   private stored?: 'localStorage' | 'sessionStorage';
+  static _instance: AuthService;
 
-  constructor() {
-    this.urlBase = 'http://localhost:8080';
+  private constructor(urlBase: string) {
+    this.urlBase = urlBase;
   }
 
-  async init(
+  public async init(
     setToken: SetterOrUpdater<string>,
     setIsAuthorized: SetterOrUpdater<string>,
     window: Window,
@@ -47,7 +49,8 @@ export default class AuthService {
     this.setMembersFromStorage();
 
     if (this.expiredTime) {
-      const isAuthorized = !this.isAccessTokenExpired(this.expiredTime); // if it is expired, it is not authorized.
+      const isAuthorized = !this.isAccessTokenExpired(this.expiredTime);
+      // if it is expired, it is not authorized.
       if (isAuthorized) {
         this.setToken(this.accessToken!);
         this.setIsAuthorized('yes');
@@ -59,7 +62,7 @@ export default class AuthService {
     }
   }
 
-  async signIn(username: string, password: string, isChecked: boolean): Promise<SignResult> {
+  public async signIn(username: string, password: string, isChecked: boolean): Promise<SignResult> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -77,7 +80,20 @@ export default class AuthService {
     return this.setTokenFromResponse(result, isChecked);
   }
 
-  signOut() {
+  public async signUp(values: SignUpValues) {
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(values),
+    };
+
+    const response = await fetch(`${this.urlBase}/auth/sign_up`, requestOptions);
+    return response.status;
+  }
+  public signOut() {
     const storage = this.window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
 
     this.window[storage].removeItem('accessToken');
@@ -94,7 +110,7 @@ export default class AuthService {
     this.setToken('');
   }
 
-  async reIssueToken(userId: string, refreshToken: string): Promise<SignResult> {
+  public async reIssueToken(userId: string, refreshToken: string): Promise<SignResult> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -168,5 +184,9 @@ export default class AuthService {
       userId: this.userId,
       message: result.message,
     };
+  }
+
+  public static getInstance(urlBase: string) {
+    return this._instance || (this._instance = new this(urlBase));
   }
 }

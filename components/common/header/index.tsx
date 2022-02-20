@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { authState } from '../../../atoms/auth';
-import AuthService from '../../../modules/auth';
+import AuthService from '../../../utils/modules/auth';
 import styles from './style.module.css';
 
 interface IProps {
@@ -16,7 +16,7 @@ export default function Header({ auth }: IProps) {
     src: string;
   }
   const menus: menu[] = [
-    { name: 'Find Requests', src: '' },
+    { name: 'Find Requests', src: '/find_requests' },
     { name: 'Post a Request', src: '/post_request' },
     { name: 'Life Hack', src: '' },
   ];
@@ -25,7 +25,12 @@ export default function Header({ auth }: IProps) {
   return (
     <header className={styles.container}>
       <div className={styles.logo_area}>
-        <img src="/img/logo.png" />
+        <img
+          src="/img/logo.png"
+          onClick={() => {
+            router.push('/');
+          }}
+        />
         <div className={styles.auth}>
           {isAuthorized === 'no' ? (
             <>

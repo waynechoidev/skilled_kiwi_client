@@ -1,6 +1,6 @@
 import React, { ReactChild } from 'react';
 
-import AuthService from '../../../modules/auth';
+import AuthService from '../../../utils/modules/auth';
 import Footer from '../footer';
 import Header from '../header';
 import styles from './style.module.css';

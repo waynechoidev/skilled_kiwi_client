@@ -2,30 +2,21 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import ErrorMessage from '../components/common/error_message';
 import SignUpInput from '../components/sign_up/input';
-import {
-  districtList,
-  phoneNumberPrefixList,
-  suburbMap,
-  District,
-  SignUpValues,
-  SignUpErrorValues,
-} from '../data/user';
+import * as Data from '../data/user';
 import useForm from '../utils/hooks/use_form';
-import {
-  confirmPasswordFilterConstructor,
-  emailFilter,
-  passwordFilter,
-  signUp,
-  usernameFilter,
-  validateSignUp,
-} from '../utils/sign_up';
+import * as Utils from '../utils/sign_up';
 import styles from '../styles/sign_up.module.css';
+import AuthService from '../utils/modules/auth';
 
-export default function SignUp() {
+interface IProps {
+  auth: AuthService;
+}
+
+export default function SignUp({ auth }: IProps) {
   const router = useRouter();
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
-    SignUpValues,
-    SignUpErrorValues
+    Data.SignUpValues,
+    Data.SignUpErrorValues
   >({
     initialValues: {
       username: '',
@@ -42,7 +33,7 @@ export default function SignUp() {
       suburb: 'Albany',
     },
     onSubmit: handleSubmit,
-    validate: validateSignUp,
+    validate: Utils.validateSignUp,
   });
 
   const genderButton = (genderItem: 'male' | 'female' | 'diverse') => {
@@ -57,8 +48,8 @@ export default function SignUp() {
     );
   };
 
-  async function handleSubmit(values: SignUpValues) {
-    const result = await signUp(values);
+  async function handleSubmit(values: Data.SignUpValues) {
+    const result = await auth.signUp(values);
     if (result === 201) {
       router.push('/');
     }
@@ -75,7 +66,7 @@ export default function SignUp() {
             type="text"
             name="username"
             value={values.username}
-            onChange={handleChange(usernameFilter)}
+            onChange={handleChange(Utils.usernameFilter)}
             error={errors.username}
           />
 
@@ -88,7 +79,7 @@ export default function SignUp() {
             type="password"
             name="password"
             value={values.password}
-            onChange={handleChange(passwordFilter)}
+            onChange={handleChange(Utils.passwordFilter)}
             error={errors.password}
           />
 
@@ -98,7 +89,8 @@ export default function SignUp() {
             name="confirmPassword"
             value={values.confirmPassword}
             onChange={(e) => {
-              errors.password || handleChange(confirmPasswordFilterConstructor(values.password))(e);
+              errors.password ||
+                handleChange(Utils.confirmPasswordFilterConstructor(values.password))(e);
             }}
             error={errors.confirmPassword}
           />
@@ -108,7 +100,7 @@ export default function SignUp() {
             type="text"
             name="email"
             value={values.email}
-            onChange={handleChange(emailFilter)}
+            onChange={handleChange(Utils.emailFilter)}
             error={errors.email}
           />
         </div>
@@ -159,7 +151,7 @@ export default function SignUp() {
               value={values.phoneNumberPrefix}
               onChange={handleChange()}
             >
-              {phoneNumberPrefixList.map((n) => (
+              {Data.phoneNumberPrefixList.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
@@ -181,22 +173,22 @@ export default function SignUp() {
               name="district"
               value={values.district}
               onChange={(e) => {
-                const newDistrict = e.target.value as District;
+                const newDistrict = e.target.value as Data.District;
                 setValues({
                   ...values,
                   district: newDistrict,
-                  suburb: suburbMap[newDistrict][0],
+                  suburb: Data.suburbMap[newDistrict][0],
                 });
               }}
             >
-              {districtList.map((n) => (
+              {Data.districtList.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
               ))}
             </select>
             <select name="suburb" value={values.suburb} onChange={handleChange()}>
-              {suburbMap[values.district].map((n) => (
+              {Data.suburbMap[values.district].map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
