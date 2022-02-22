@@ -9,7 +9,7 @@ import { authState } from '../atoms/auth';
 import { tokenState } from '../atoms/token';
 import ErrorMessage from '../components/common/error_message';
 import RequestInput from '../components/post_request/input';
-import * as Data from '../data/post_request';
+import * as Data from '../data/request';
 import useForm from '../utils/hooks/use_form';
 import styles from '../styles/post_request.module.css';
 import * as Utils from '../utils/post_request';

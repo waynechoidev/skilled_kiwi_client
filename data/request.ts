@@ -28,3 +28,24 @@ export type Image = {
   name: string;
   size: string;
 };
+
+export type RequestsItem = {
+  id: number;
+  title: string;
+  district: string;
+  suburb: string;
+  category: string;
+  detail: string;
+  images: string[];
+  createdAt: string;
+  userId: number;
+  username: string;
+  pay: number;
+};
+
+export type SearchValues = {
+  keyword: string;
+  district: District | 'All Location';
+  suburb: Suburb | '';
+  category: JobCategory | 'All Category';
+};

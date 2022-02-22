@@ -1,4 +1,4 @@
-import { RequestErrorValues, RequestValues } from './../data/post_request';
+import { RequestErrorValues, RequestValues } from '../data/request';
 
 export function titleFilter(title: string) {
   if (!title) {

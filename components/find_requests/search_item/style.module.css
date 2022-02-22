@@ -1,0 +1,45 @@
+.container {
+  box-shadow: 0 0 4px 0 rgb(0 0 0 / 8%), 0 2px 4px 0 rgb(0 0 0 / 12%);
+  border-radius: 5px;
+  background-color: #fff;
+  display: flex;
+  margin: 20px 0;
+}
+
+.container h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.image_wrapper {
+  height: 150px;
+  background-color: #aaaaaa;
+}
+.image_wrapper img {
+  width: 200px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.contents {
+  padding: 10px;
+  height: 150px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.location_time {
+  font-size: 0.8rem;
+  margin: 0;
+  margin-bottom: 10px;
+}
+.detail {
+  margin: 0;
+}
+
+.pay {
+  font-weight: bold;
+  margin: 0;
+}

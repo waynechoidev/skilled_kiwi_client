@@ -1,0 +1,35 @@
+.container {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  animation: slide-in 0.5s;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.container select {
+  width: 33%;
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #adadad;
+  border-radius: 2px;
+}
+
+.location {
+  display: flex;
+  flex-direction: row;
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    height: 20px;
+  }
+  100% {
+    opacity: 1;
+    height: 50px;
+  }
+}

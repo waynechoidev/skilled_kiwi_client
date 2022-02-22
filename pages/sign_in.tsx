@@ -6,10 +6,10 @@ import { useRecoilValue } from 'recoil';
 import { authState } from '../atoms/auth';
 
 interface IProps {
-  authService: AuthService;
+  auth: AuthService;
 }
 
-export default function SignIn({ authService }: IProps) {
+export default function SignIn({ auth }: IProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
@@ -34,7 +34,7 @@ export default function SignIn({ authService }: IProps) {
     setIsHideError(true);
     e.preventDefault();
 
-    const result = await authService.signIn(username, password, isChecked);
+    const result = await auth.signIn(username, password, isChecked);
     setPassword('');
 
     if (result.status > 199 && result.status < 300) {
