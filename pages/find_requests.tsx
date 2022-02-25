@@ -3,7 +3,6 @@ import useSWR from 'swr';
 import { fetcher } from '../utils/common';
 import styles from '../styles/find_requests.module.css';
 import * as Data from '../data/request';
-import * as UserData from '../data/user';
 
 import SearchItem from '../components/find_requests/search_item';
 import useForm from '../utils/hooks/use_form';
@@ -26,18 +25,20 @@ export default function FindRequests({ urlBase }: IProps) {
     onSubmit: (values) => {
       let newQuery: string = '';
       if (values.keyword) {
-        newQuery += `?q=${values.keyword}`;
+        newQuery += `&q=${values.keyword}`;
       }
       if (values.district != 'All Location') {
-        newQuery += `?district=${values.district}`;
+        newQuery += `&district=${values.district}`;
       }
       if (values.suburb != '') {
-        newQuery += `?suburb=${values.suburb}`;
+        newQuery += `&suburb=${values.suburb}`;
       }
       if (values.category != 'All Category') {
-        newQuery += `?category=${values.category}`;
+        newQuery += `&category=${values.category}`;
       }
-      console.log(newQuery);
+
+      newQuery = newQuery.replace('&', '?');
+      setQuery(newQuery);
     },
     validate: async () => ({}),
   });
@@ -50,7 +51,12 @@ export default function FindRequests({ urlBase }: IProps) {
           <div className={styles.search_default}>
             <div className={styles.search_bar}>
               <img src="/img/search.svg" />
-              <input placeholder="Search Keyword" name="keyword" onChange={handleChange()} />
+              <input
+                placeholder="Search Keyword"
+                value={values.keyword}
+                name="keyword"
+                onChange={handleChange()}
+              />
             </div>
             <input className={styles.search_button} type="submit" value="Search" />
           </div>
