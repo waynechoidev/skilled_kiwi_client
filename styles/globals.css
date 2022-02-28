@@ -13,7 +13,7 @@ body,
 }
 
 a {
-  color: #007fed;
+  color: inherit;
   text-decoration: none;
 }
 
@@ -29,4 +29,8 @@ button {
 
 input {
   outline: none;
+}
+
+p {
+  margin: 0;
 }

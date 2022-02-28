@@ -8,3 +8,18 @@ export function calculateByte(bytes: number) {
 }
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export const getDate = (dateStr: string) => {
+  const newDate = new Date(dateStr).toDateString().split(' ');
+  return `${newDate[0]}, ${newDate[1]} ${newDate[2]}`;
+};
+
+export const getDateAndTime = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const newDate = date.toDateString().split(' ');
+  let hour = date.getHours();
+  const minutes = date.getMinutes();
+  const amPm = hour < 12 ? 'am' : 'pm';
+  hour = hour < 12 ? hour : hour - 12;
+  return `${newDate[0]}, ${newDate[1]} ${newDate[2]}, ${hour}:${minutes}${amPm}`;
+};

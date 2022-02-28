@@ -1,9 +1,84 @@
 import { useRouter } from 'next/router';
 import React from 'react';
+import useSWR from 'swr';
+import * as Data from '../../data/request';
+import { fetcher, getDateAndTime } from '../../utils/common';
+import styles from '../../styles/request.module.css';
+import Link from 'next/link';
 
-export default function Request() {
+interface IProps {
+  urlBase: string;
+}
+export default function Request({ urlBase }: IProps) {
   const router = useRouter();
   const { id } = router.query;
-  console.log(id);
-  return <div>Request</div>;
+  const { data, error } = useSWR<Data.RequestsItem>(() => `${urlBase}/jobs/${id}`, fetcher);
+  console.log(data);
+
+  if (error) return 'An error has occurred.';
+  if (!data) return 'Loading...';
+  return (
+    <div className={styles.container}>
+      <div className={styles.subject_wrapper}>
+        <div className={styles.subject}>
+          <h2>{data.title}</h2>
+          <p>${data.pay}</p>
+        </div>
+      </div>
+      <div className={styles.links}>
+        <Link href={'/'}>
+          <a>SkilledKiwi</a>
+        </Link>
+        <span> / </span>
+        <Link href={'/find_requests'}>
+          <a>Find Requests</a>
+        </Link>
+        <span> / </span>
+        <Link href={`request/${id}`}>
+          <a>{data.title}</a>
+        </Link>
+      </div>
+      <div className={styles.contents}>
+        <div className={styles.box}>
+          <p>{data.detail}</p>
+          <div className={styles.info}>
+            <p>
+              <b>Listed: </b>
+              {getDateAndTime(data.createdAt)}
+            </p>
+            <p>
+              <b>Category: </b>
+              {data.category}
+            </p>
+            <p>
+              <b>Location: </b>
+              {data.suburb}, {data.district}
+            </p>
+            <p>
+              <b>Request ID: </b>#{data.id}
+            </p>
+          </div>
+          {data.images[0] && (
+            <div className={styles.image_wrapper}>
+              {data.images.map((img) => (
+                <img src={img} />
+              ))}
+            </div>
+          )}
+        </div>
+        <div className={`${styles.box} ${styles.employer}`}>
+          <h3>About Employer</h3>
+          <hr />
+          <p>
+            <b>Username: </b>
+            {data.username}
+          </p>
+          <p>
+            <b>Member Since: </b>
+            {data.username}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }

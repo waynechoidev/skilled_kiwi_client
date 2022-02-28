@@ -1,3 +1,6 @@
 :root {
   --max-width: 900px;
+  --grey-bg: #f0f0f0;
+  --light-grey-font: #c5c5c5;
+  --grey-font: #333333;
 }

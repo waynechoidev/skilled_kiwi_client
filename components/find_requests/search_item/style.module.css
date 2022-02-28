@@ -4,8 +4,11 @@
   background-color: #fff;
   display: flex;
   margin: 20px 0;
+  cursor: pointer;
 }
-
+.container:hover {
+  transform: scale(1.01);
+}
 .container h3 {
   font-size: 1rem;
   margin: 0;
@@ -13,7 +16,7 @@
 
 .image_wrapper {
   height: 150px;
-  background-color: #aaaaaa;
+  background-color: #d3d3d3;
 }
 .image_wrapper img {
   width: 200px;
