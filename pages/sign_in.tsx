@@ -37,10 +37,10 @@ export default function SignIn({ auth }: IProps) {
     const result = await auth.signIn(username, password, isChecked);
     setPassword('');
 
-    if (result.status > 199 && result.status < 300) {
+    if (result === 'success') {
       goBack();
-    } else if (result.status > 399) {
-      setErrorMsg(result.message!);
+    } else if (result) {
+      setErrorMsg(result);
       setIsHideError(false);
     } else {
       setErrorMsg('Something Wrong!');

@@ -1,27 +1,19 @@
-import { SetterOrUpdater } from 'recoil';
 import { SignUpValues } from '../../data/user';
 
-interface SignResponse {
-  status: number;
+interface SignInResult {
   message?: string;
-  accessToken?: string;
-  refreshToken?: string;
-  expiresIn?: number;
-  userId?: number;
-} // Raw values from response of sign in API
-interface SignResult {
-  status: number;
   accessToken?: string;
   refreshToken?: string;
   expiredTime?: string;
   userId?: string;
-  message?: string;
-} // Sanitized values from response of sign in API
+}
+
+type Updater = (str: String) => String;
 
 export default class AuthService {
   private date!: Date;
-  private setToken!: SetterOrUpdater<string>;
-  private setIsAuthorized!: SetterOrUpdater<string>;
+  private setToken!: Updater;
+  private setIsAuthorized!: Updater;
   private window!: Window;
 
   private accessToken?: string;
@@ -37,12 +29,7 @@ export default class AuthService {
     this.urlBase = urlBase;
   }
 
-  public async init(
-    setToken: SetterOrUpdater<string>,
-    setIsAuthorized: SetterOrUpdater<string>,
-    window: Window,
-    date: Date
-  ) {
+  public async init(setToken: Updater, setIsAuthorized: Updater, window: Window, date: Date) {
     this.setToken = setToken;
     this.setIsAuthorized = setIsAuthorized;
     this.window = window;
@@ -62,8 +49,11 @@ export default class AuthService {
       this.setIsAuthorized('no');
     }
   }
-
-  public async signIn(username: string, password: string, isChecked: boolean): Promise<SignResult> {
+  public async signIn(
+    username: string,
+    password: string,
+    isChecked: boolean
+  ): Promise<string | undefined> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -77,10 +67,14 @@ export default class AuthService {
     };
 
     const response = await fetch(`${this.urlBase}/auth/sign_in`, requestOptions);
-    const result: SignResponse = { status: response.status, ...(await response.json()) };
-    return this.setTokenFromResponse(result, isChecked);
+    const result: SignInResult = await response.json();
+    if (response.status > 199 && response.status < 300) {
+      this.setTokenFromResponse(result, isChecked);
+      return 'success';
+    } else {
+      return result.message;
+    }
   }
-
   public async signUp(values: SignUpValues) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -110,8 +104,7 @@ export default class AuthService {
     this.setIsAuthorized('no');
     this.setToken('');
   }
-
-  public async reIssueToken(userId: string, refreshToken: string): Promise<SignResult> {
+  private async reIssueToken(userId: string, refreshToken: string): Promise<string | undefined> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -124,24 +117,28 @@ export default class AuthService {
       }),
     };
     const response = await fetch(`${this.urlBase}/auth/reissue_token`, requestOptions);
-    const result: SignResponse = { status: response.status, ...(await response.json()) };
-    if (result.status === 401) {
-      this.signOut();
-    }
-    return this.setTokenFromResponse(result);
-  }
+    const result: SignInResult = await response.json();
 
+    if (response.status > 199 && response.status < 300) {
+      this.setTokenFromResponse(result);
+      return 'success';
+    } else {
+      this.signOut();
+      return result.message;
+    }
+  }
   private isAccessTokenExpired(expiredTime?: string) {
     if (!expiredTime) {
       return true;
     }
 
-    if (this.date!.getTime() / 1000 >= parseInt(expiredTime)) {
+    if (this.date!.getTime() >= parseInt(expiredTime)) {
       return true;
     } else {
       return false;
     }
   }
+
   private setMembersFromStorage() {
     const storage =
       window.localStorage.getItem('stored') === 'localStorage' ? 'localStorage' : 'sessionStorage';
@@ -159,32 +156,19 @@ export default class AuthService {
     window[this.stored!].setItem('expiredTime', this.expiredTime!);
     window[this.stored!].setItem('userId', this.userId!);
   }
-  private setTokenFromResponse(result: SignResponse, isChecked?: boolean): SignResult {
-    if (result.status === 201) {
-      this.accessToken = result.accessToken;
-      this.refreshToken = result.refreshToken;
-      this.expiredTime = (this.date!.getTime() / 1000 + result.expiresIn!)?.toString(); //cannot set int in storage
-      this.userId = result.userId?.toString(); //cannot set int in storage
-      if (typeof isChecked === 'boolean') {
-        this.stored = isChecked ? 'localStorage' : 'sessionStorage';
-      }
-
-      this.setStorageFromMembers();
-
-      this.setToken(this.accessToken!);
-      this.setIsAuthorized('yes');
-    } else {
-      console.error(result.message);
+  private setTokenFromResponse(result: SignInResult, isChecked?: boolean) {
+    this.accessToken = result.accessToken;
+    this.refreshToken = result.refreshToken;
+    this.expiredTime = result.expiredTime;
+    this.userId = result.userId;
+    if (typeof isChecked === 'boolean') {
+      this.stored = isChecked ? 'localStorage' : 'sessionStorage';
     }
 
-    return {
-      status: result.status,
-      accessToken: this.accessToken,
-      refreshToken: this.refreshToken,
-      expiredTime: this.expiredTime,
-      userId: this.userId,
-      message: result.message,
-    };
+    this.setStorageFromMembers();
+
+    this.setToken(this.accessToken!);
+    this.setIsAuthorized('yes');
   }
 
   public static getInstance(urlBase: string) {
