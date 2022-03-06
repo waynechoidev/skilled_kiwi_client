@@ -1,22 +1,18 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AuthService from '../utils/modules/auth';
 import styles from '../styles/sign_in.module.css';
-import { useRecoilValue } from 'recoil';
-import { authState } from '../atoms/auth';
+import { authContext } from '../context/auth';
 
-interface IProps {
-  auth: AuthService;
-}
-
-export default function SignIn({ auth }: IProps) {
+export default function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isHideError, setIsHideError] = useState(true);
 
-  const isAuthorized = useRecoilValue(authState);
+  const auth = useContext(authContext);
+  const isAuth = auth.isAuth;
 
   const router = useRouter();
   const { back_to } = router.query;
@@ -34,7 +30,7 @@ export default function SignIn({ auth }: IProps) {
     setIsHideError(true);
     e.preventDefault();
 
-    const result = await auth.signIn(username, password, isChecked);
+    const result = await auth.service.signIn(username, password, isChecked);
     setPassword('');
 
     if (result === 'success') {
@@ -49,7 +45,7 @@ export default function SignIn({ auth }: IProps) {
   };
 
   useEffect(() => {
-    if (isAuthorized === 'yes') {
+    if (isAuth === 'yes') {
       goBack();
     }
   }, []);

@@ -8,12 +8,14 @@ interface SignInResult {
   userId?: string;
 }
 
-type Updater = (str: String) => String;
-
+export type AuthStatus = {
+  token: string;
+  isAuth: 'yes' | 'no' | '';
+};
 export default class AuthService {
+  private urlBase!: string;
   private date!: Date;
-  private setToken!: Updater;
-  private setIsAuthorized!: Updater;
+  private setStatus!: Function;
   private window!: Window;
 
   private accessToken?: string;
@@ -21,32 +23,32 @@ export default class AuthService {
   private expiredTime?: string;
   private userId?: string;
   private stored?: 'localStorage' | 'sessionStorage';
+  private isAuth?: 'yes' | 'no' | '';
 
-  private urlBase: string;
   static _instance: AuthService;
 
-  private constructor(urlBase: string) {
-    this.urlBase = urlBase;
-  }
+  private constructor() {}
 
-  public async init(setToken: Updater, setIsAuthorized: Updater, window: Window, date: Date) {
-    this.setToken = setToken;
-    this.setIsAuthorized = setIsAuthorized;
+  public async init(urlBase: string, window: Window, date: Date, setStatus: Function) {
+    this.urlBase = urlBase;
+
+    this.setStatus = setStatus;
     this.window = window;
     this.date = date;
     this.setMembersFromStorage();
 
     if (this.expiredTime) {
-      const isAuthorized = !this.isAccessTokenExpired(this.expiredTime);
+      const isAuth = !this.isAccessTokenExpired(this.expiredTime);
       // if it is expired, it is not authorized.
-      if (isAuthorized) {
-        this.setToken(this.accessToken!);
-        this.setIsAuthorized('yes');
+      if (isAuth) {
+        this.isAuth = 'yes';
+        this.update();
       } else {
         await this.reIssueToken(this.userId!, this.refreshToken!);
       }
     } else {
-      this.setIsAuthorized('no');
+      this.isAuth = 'no';
+      this.update();
     }
   }
   public async signIn(
@@ -70,6 +72,7 @@ export default class AuthService {
     const result: SignInResult = await response.json();
     if (response.status > 199 && response.status < 300) {
       this.setTokenFromResponse(result, isChecked);
+      this.update();
       return 'success';
     } else {
       return result.message;
@@ -101,8 +104,8 @@ export default class AuthService {
     this.refreshToken = undefined;
     this.expiredTime = undefined;
     this.userId = undefined;
-    this.setIsAuthorized('no');
-    this.setToken('');
+    this.isAuth = 'no';
+    this.update();
   }
   private async reIssueToken(userId: string, refreshToken: string): Promise<string | undefined> {
     const myHeaders = new Headers();
@@ -121,24 +124,25 @@ export default class AuthService {
 
     if (response.status > 199 && response.status < 300) {
       this.setTokenFromResponse(result);
+      this.update();
       return 'success';
     } else {
       this.signOut();
       return result.message;
     }
   }
+
   private isAccessTokenExpired(expiredTime?: string) {
     if (!expiredTime) {
-      return true;
+      return 'yes';
     }
 
     if (this.date!.getTime() >= parseInt(expiredTime)) {
-      return true;
+      return 'yes';
     } else {
-      return false;
+      return 'no';
     }
   }
-
   private setMembersFromStorage() {
     const storage =
       window.localStorage.getItem('stored') === 'localStorage' ? 'localStorage' : 'sessionStorage';
@@ -166,12 +170,14 @@ export default class AuthService {
     }
 
     this.setStorageFromMembers();
-
-    this.setToken(this.accessToken!);
-    this.setIsAuthorized('yes');
+    this.isAuth = 'yes';
+    this.update();
   }
-
-  public static getInstance(urlBase: string) {
-    return this._instance || (this._instance = new this(urlBase));
+  private update() {
+    const status: AuthStatus = { token: this.accessToken!, isAuth: this.isAuth! };
+    this.setStatus(status);
+  }
+  public static getInstance() {
+    return this._instance || (this._instance = new this());
   }
 }

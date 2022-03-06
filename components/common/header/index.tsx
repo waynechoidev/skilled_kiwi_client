@@ -1,16 +1,12 @@
 import { useRouter } from 'next/router';
-import React from 'react';
-import { useRecoilValue } from 'recoil';
-import { authState } from '../../../atoms/auth';
-import AuthService from '../../../utils/modules/auth';
+import React, { useContext } from 'react';
+import { authContext } from '../../../context/auth';
 import styles from './style.module.css';
 
-interface IProps {
-  auth: AuthService;
-}
+export default function Header() {
+  const auth = useContext(authContext);
+  const isAuth = auth.isAuth;
 
-export default function Header({ auth }: IProps) {
-  const isAuthorized = useRecoilValue(authState);
   interface menu {
     name: string;
     src: string;
@@ -32,7 +28,7 @@ export default function Header({ auth }: IProps) {
           }}
         />
         <div className={styles.auth}>
-          {isAuthorized === 'no' ? (
+          {isAuth === 'no' ? (
             <>
               <span
                 onClick={() => {
@@ -52,7 +48,7 @@ export default function Header({ auth }: IProps) {
           ) : (
             <span
               onClick={() => {
-                auth.signOut();
+                auth.service.signOut();
               }}
             >
               Sign Out
