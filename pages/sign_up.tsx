@@ -6,7 +6,6 @@ import { authContext } from '../context/auth';
 import useForm from '../hooks/use_form';
 import SignUpService, { SignUpErrorValues, SignUpValues } from '../services/sign_up';
 import UserService, { District } from '../services/user';
-import UtilService from '../services/util';
 import styles from '../styles/sign_up.module.css';
 
 export default function SignUp() {

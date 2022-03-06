@@ -1,4 +1,4 @@
-import { SignUpValues } from './user';
+import { SignUpValues } from './sign_up';
 
 interface SignInResult {
   message?: string;

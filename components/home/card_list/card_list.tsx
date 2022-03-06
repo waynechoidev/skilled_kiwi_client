@@ -5,7 +5,7 @@ interface Card {
 
 export const cardList: Card[] = [
   {
-    bg: '/img/card01.jpg',
+    bg: '/img/card/01.jpg',
     msg: () => (
       <div>
         I need a hand.
@@ -18,7 +18,7 @@ export const cardList: Card[] = [
     ),
   },
   {
-    bg: '/img/card02.jpg',
+    bg: '/img/card/02.jpg',
     msg: () => (
       <div>
         <b>Skilled Kiwis</b>
@@ -34,7 +34,7 @@ export const cardList: Card[] = [
     ),
   },
   {
-    bg: '/img/card03.jpg',
+    bg: '/img/card/03.jpg',
     msg: () => (
       <div>
         Earn extra income

@@ -11,6 +11,7 @@ import { RequestsItem, SearchValues } from '../services/request';
 interface IProps {
   urlBase: string;
 }
+
 export default function FindRequests({ urlBase }: IProps) {
   const [isHidingSearchTool, setIsHidingSearchTool] = useState(true);
   const [query, setQuery] = useState('');
@@ -53,7 +54,7 @@ export default function FindRequests({ urlBase }: IProps) {
         <form className={styles.search_form} onSubmit={submitHandle}>
           <div className={styles.search_default}>
             <div className={styles.search_bar}>
-              <img src="/img/search.svg" />
+              <img src="/img/icon/search.svg" />
               <input
                 placeholder="Search Keyword"
                 value={values.keyword}
@@ -68,7 +69,7 @@ export default function FindRequests({ urlBase }: IProps) {
           )}
           <img
             className={styles.expand_button}
-            src={isHidingSearchTool ? '/img/expand_more.svg' : '/img/expand_less.svg'}
+            src={isHidingSearchTool ? '/img/icon/expand_more.svg' : '/img/icon/expand_less.svg'}
             onClick={() => {
               setIsHidingSearchTool(!isHidingSearchTool);
             }}

@@ -18,7 +18,12 @@ export default function SignUpInput({ type, name, value, onChange, error }: IPro
       case 'confirmPassword':
       case 'email':
         if (item.length > 0) {
-          return <img className={styles.valid_icon} src={error ? '/img/no.svg' : '/img/yes.svg'} />;
+          return (
+            <img
+              className={styles.valid_icon}
+              src={error ? '/img/icon/no.svg' : '/img/icon/yes.svg'}
+            />
+          );
         }
         break;
     }

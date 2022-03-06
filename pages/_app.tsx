@@ -6,6 +6,7 @@ import AuthProvider from '../context/auth';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;
+  const urlBase = 'http://localhost:8080';
 
   return (
     <AuthProvider>
@@ -13,7 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       ) : (
         <Layout>
-          <Component {...pageProps} />
+          <Component {...pageProps} urlBase={urlBase} />
         </Layout>
       )}
     </AuthProvider>
