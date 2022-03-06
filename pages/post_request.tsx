@@ -1,37 +1,37 @@
 //ToDO
 //set routing after submit
 //refactor logic to modularize
+//Modularize request
 
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { authState } from '../atoms/auth';
-import { tokenState } from '../atoms/token';
-import ErrorMessage from '../components/common/error_message';
-import RequestInput from '../components/post_request/input';
-import * as Data from '../data/request';
-import useForm from '../utils/hooks/use_form';
+import React, { useContext, useEffect, useState } from 'react';
+import ErrorMessage from '../components/common/error_message/error_message';
+import useForm from '../hooks/use_form';
 import styles from '../styles/post_request.module.css';
-import * as Utils from '../utils/post_request';
-import * as UserData from '../data/user';
-import { calculateByte } from '../utils/common';
 
-interface IProps {
-  urlBase: string;
-}
+import UtilService from '../services/util';
+import { authContext } from '../context/auth';
+import Input from '../components/common/input/input';
+import RequestService, {
+  RequestErrorValues,
+  RequestImage,
+  RequestValues,
+} from '../services/request';
+import UserService, { District } from '../services/user';
 
-export default function PostRequest({ urlBase }: IProps) {
-  const isAuthorized = useRecoilValue(authState);
-  const token = useRecoilValue(tokenState);
+export default function PostRequest() {
+  const urlBase = 'adf';
+  const auth = useContext(authContext);
+  const { isAuth, token } = auth;
   const router = useRouter();
 
   const [imageError, setImageError] = useState('');
   const [isImageLoading, setIsImageUploading] = useState(false);
-  const [images, setImages] = useState<Data.Image[]>([]);
+  const [images, setImages] = useState<RequestImage[]>([]);
 
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
-    Data.RequestValues,
-    Data.RequestErrorValues
+    RequestValues,
+    RequestErrorValues
   >({
     initialValues: {
       title: '',
@@ -42,16 +42,16 @@ export default function PostRequest({ urlBase }: IProps) {
       images: [],
     },
     onSubmit: async () => {
-      const result = await Utils.postRequest(`${urlBase}/jobs`, values, token);
+      const result = await RequestService.postRequest(`${urlBase}/jobs`, values, token);
       console.log(result);
     },
-    validate: Utils.validateSubmitRequest,
+    validate: RequestService.validateSubmitRequest,
   });
   useEffect(() => {
-    if (isAuthorized === 'no') {
+    if (isAuth === 'no') {
       router.push('/sign_in?back_to=post_request');
     }
-  }, [isAuthorized]);
+  }, [isAuth]);
 
   return (
     <div className={styles.container}>
@@ -61,13 +61,13 @@ export default function PostRequest({ urlBase }: IProps) {
       </p>
       <form className={styles.form} onSubmit={submitHandle}>
         <h2>Choose a name for your request</h2>
-        <RequestInput
+        <Input
           type="text"
           name="title"
           value={values.title}
-          onChange={handleChange(Utils.titleFilter)}
-          error={errors.title}
+          onChange={handleChange(RequestService.titleFilter)}
         />
+        <ErrorMessage error={errors.title} />
 
         <h2>Location (closest district)</h2>
         <div className={styles.location}>
@@ -75,22 +75,22 @@ export default function PostRequest({ urlBase }: IProps) {
             name="district"
             value={values.district}
             onChange={(e) => {
-              const newDistrict = e.target.value as UserData.District;
+              const newDistrict = e.target.value as District;
               setValues({
                 ...values,
                 district: newDistrict,
-                suburb: UserData.suburbMap[newDistrict][0],
+                suburb: UserService.suburbMap[newDistrict][0],
               });
             }}
           >
-            {UserData.districtList.map((n) => (
+            {UserService.districtList.map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
             ))}
           </select>
           <select name="suburb" value={values.suburb} onChange={handleChange()}>
-            {UserData.suburbMap[values.district].map((n) => (
+            {UserService.suburbMap[values.district].map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
@@ -103,14 +103,14 @@ export default function PostRequest({ urlBase }: IProps) {
           <textarea
             name="detail"
             value={values.detail}
-            onChange={handleChange(Utils.detailFilter)}
+            onChange={handleChange(RequestService.detailFilter)}
           ></textarea>
           <ErrorMessage error={errors.detail} />
         </div>
 
         <h2>Category</h2>
         <select name="category" value={values.category} onChange={handleChange()}>
-          {Data.jobCategoryList.map((n) => (
+          {RequestService.jobCategoryList.map((n) => (
             <option key={n} value={n}>
               {n}
             </option>
@@ -167,12 +167,12 @@ export default function PostRequest({ urlBase }: IProps) {
                 setImageError('Max number of image is 5.');
               } else {
                 setImageError('');
-                const newImage: Data.Image = {
+                const newImage: RequestImage = {
                   file,
                   name: file.name,
-                  size: calculateByte(file.size),
+                  size: UtilService.calculateByte(file.size),
                 };
-                values.images = [...values.images, await Utils.uploadImage(file)];
+                values.images = [...values.images, await RequestService.uploadImage(file)];
                 setImages([...images, newImage]);
               }
             }

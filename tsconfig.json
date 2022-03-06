@@ -21,7 +21,8 @@
     "atoms/**/*",
     "components/**/*",
     "data/**/*",
-    "utils/**/*"
+    "services/**/*",
+    "hooks"
   ],
   "exclude": ["node_modules"]
 }

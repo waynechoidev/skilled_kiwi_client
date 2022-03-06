@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import { fetcher } from '../utils/common';
+import UtilService from '../services/util';
 import styles from '../styles/find_requests.module.css';
-import * as Data from '../data/request';
 
-import SearchItem from '../components/find_requests/search_item';
-import useForm from '../utils/hooks/use_form';
-import SearchFilter from '../components/find_requests/search_filter';
+import SearchItem from '../components/find_requests/search_item/search_item';
+import useForm from '../hooks/use_form';
+import SearchFilter from '../components/find_requests/search_filter/search_filter';
+import { RequestsItem, SearchValues } from '../services/request';
 
 interface IProps {
   urlBase: string;
@@ -14,8 +14,11 @@ interface IProps {
 export default function FindRequests({ urlBase }: IProps) {
   const [isHidingSearchTool, setIsHidingSearchTool] = useState(true);
   const [query, setQuery] = useState('');
-  const { data, error } = useSWR<Data.RequestsItem[]>(() => `${urlBase}/jobs${query}`, fetcher);
-  const { values, setValues, errors, handleChange, submitHandle } = useForm<Data.SearchValues, {}>({
+  const { data, error } = useSWR<RequestsItem[]>(
+    () => `${urlBase}/jobs${query}`,
+    UtilService.fetcher
+  );
+  const { values, setValues, errors, handleChange, submitHandle } = useForm<SearchValues, {}>({
     initialValues: {
       keyword: '',
       district: 'All Location',

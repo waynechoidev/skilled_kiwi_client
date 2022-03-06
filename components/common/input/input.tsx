@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler, HTMLInputTypeAttribute } from 'react';
-import styles from './style.module.css';
+import styles from './input.module.css';
 
 interface IProps {
   type: HTMLInputTypeAttribute;

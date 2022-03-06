@@ -1,11 +1,10 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Carousel from '../components/home/carousel';
-import { Card } from '../data/home';
+import Carousel from '../components/home/carousel/carousel';
 import styles from '../styles/home.module.css';
 
 const Home: NextPage = () => {
-  const cardList: Card[] = [
+  const cardList = [
     {
       bg: '/img/card01.jpg',
       msg: () => (
