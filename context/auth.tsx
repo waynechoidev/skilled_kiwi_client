@@ -1,5 +1,5 @@
 import { createContext, ReactChild, useEffect, useState } from 'react';
-import AuthService, { AuthStatus } from '../utils/modules/auth';
+import AuthService, { AuthStatus } from '../services/auth';
 
 interface AuthProviderValue extends AuthStatus {
   service: AuthService;

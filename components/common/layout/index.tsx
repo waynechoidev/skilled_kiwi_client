@@ -1,8 +1,7 @@
 import React, { ReactChild } from 'react';
 
-import AuthService from '../../../utils/modules/auth';
-import Footer from '../footer';
-import Header from '../header';
+import Footer from '../footer/footer';
+import Header from '../header/header';
 import styles from './style.module.css';
 
 interface IProps {

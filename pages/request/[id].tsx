@@ -1,18 +1,17 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
-import * as Data from '../../data/request';
-import { fetcher, getDateAndTime } from '../../utils/common';
 import styles from '../../styles/request.module.css';
 import Link from 'next/link';
-
+import UtilService from '../../services/util';
+import { RequestsItem } from '../../services/request';
 interface IProps {
   urlBase: string;
 }
 export default function Request({ urlBase }: IProps) {
   const router = useRouter();
   const { id } = router.query;
-  const { data, error } = useSWR<Data.RequestsItem>(() => `${urlBase}/jobs/${id}`, fetcher);
+  const { data, error } = useSWR<RequestsItem>(() => `${urlBase}/jobs/${id}`, UtilService.fetcher);
   console.log(data);
 
   if (error) return 'An error has occurred.';
@@ -44,7 +43,7 @@ export default function Request({ urlBase }: IProps) {
           <div className={styles.info}>
             <p>
               <b>Listed: </b>
-              {getDateAndTime(data.createdAt)}
+              {UtilService.getDateAndTime(data.createdAt)}
             </p>
             <p>
               <b>Category: </b>

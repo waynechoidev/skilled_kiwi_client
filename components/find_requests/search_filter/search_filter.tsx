@@ -1,10 +1,10 @@
 import React from 'react';
-import * as Data from '../../../data/request';
-import * as UserData from '../../../data/user';
-import styles from './style.module.css';
+import RequestService, { SearchValues } from '../../../services/request';
+import UserService, { District } from '../../../services/user';
+import styles from './search_filter.module.css';
 
 interface IProps {
-  values: Data.SearchValues;
+  values: SearchValues;
   handleChange: Function;
   setValues: Function;
 }
@@ -14,7 +14,7 @@ export default function SearchFilter({ values, handleChange, setValues }: IProps
     <div className={styles.container}>
       <select name="category" value={values.category} onChange={handleChange()}>
         <option>All Category</option>
-        {Data.jobCategoryList.map((n) => (
+        {RequestService.jobCategoryList.map((n) => (
           <option key={n} value={n}>
             {n}
           </option>
@@ -25,16 +25,16 @@ export default function SearchFilter({ values, handleChange, setValues }: IProps
         name="district"
         value={values.district}
         onChange={(e) => {
-          const newDistrict = e.target.value as UserData.District | 'All Location';
+          const newDistrict = e.target.value as District | 'All Location';
           setValues({
             ...values,
             district: newDistrict,
-            suburb: newDistrict != 'All Location' ? UserData.suburbMap[newDistrict][0] : '',
+            suburb: newDistrict != 'All Location' ? UserService.suburbMap[newDistrict][0] : '',
           });
         }}
       >
         <option>All Location</option>
-        {UserData.districtList.map((n) => (
+        {UserService.districtList.map((n) => (
           <option key={n} value={n}>
             {n}
           </option>
@@ -43,7 +43,7 @@ export default function SearchFilter({ values, handleChange, setValues }: IProps
 
       {values.district != 'All Location' ? (
         <select name="suburb" value={values.suburb} onChange={handleChange()}>
-          {UserData.suburbMap[values.district].map((n) => (
+          {UserService.suburbMap[values.district].map((n) => (
             <option key={n} value={n}>
               {n}
             </option>

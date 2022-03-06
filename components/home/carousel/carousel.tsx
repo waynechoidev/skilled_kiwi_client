@@ -1,7 +1,9 @@
-import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 'react';
-import { Card } from '../../../data/home';
-import styles from './style.module.css';
-
+import React, { useEffect, useState, useRef } from 'react';
+import styles from './carousel.module.css';
+interface Card {
+  bg: string;
+  msg: Function;
+}
 interface IProps {
   cardList: Card[];
 }

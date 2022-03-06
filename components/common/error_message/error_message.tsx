@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './style.module.css';
+import styles from './error_message.module.css';
 
 interface IProps {
   error?: string;

@@ -1,7 +1,7 @@
 import React, { ChangeEventHandler, HTMLInputTypeAttribute } from 'react';
-import ErrorMessage from '../../common/error_message';
-import Input from '../../common/input';
-import styles from './style.module.css';
+import ErrorMessage from '../../common/error_message/error_message';
+import Input from '../../common/input/input';
+import styles from './sign_up_input.module.css';
 
 interface IProps {
   type: HTMLInputTypeAttribute;

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import { authContext } from '../../../context/auth';
-import styles from './style.module.css';
+import styles from './header.module.css';
 
 export default function Header() {
   const auth = useContext(authContext);

@@ -1,22 +1,21 @@
 import { useRouter } from 'next/router';
-import React from 'react';
-import ErrorMessage from '../components/common/error_message';
-import SignUpInput from '../components/sign_up/input';
-import * as Data from '../data/user';
-import useForm from '../utils/hooks/use_form';
-import * as Utils from '../utils/sign_up';
+import React, { useContext } from 'react';
+import ErrorMessage from '../components/common/error_message/error_message';
+import SignUpInput from '../components/sign_up/sign_up_input/sign_up_input';
+import { authContext } from '../context/auth';
+import useForm from '../hooks/use_form';
+import SignUpService, { SignUpErrorValues, SignUpValues } from '../services/sign_up';
+import UserService, { District } from '../services/user';
+import UtilService from '../services/util';
 import styles from '../styles/sign_up.module.css';
-import AuthService from '../utils/modules/auth';
 
-interface IProps {
-  authService: AuthService;
-}
+export default function SignUp() {
+  const auth = useContext(authContext);
 
-export default function SignUp({ authService }: IProps) {
   const router = useRouter();
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
-    Data.SignUpValues,
-    Data.SignUpErrorValues
+    SignUpValues,
+    SignUpErrorValues
   >({
     initialValues: {
       username: '',
@@ -33,7 +32,7 @@ export default function SignUp({ authService }: IProps) {
       suburb: 'Albany',
     },
     onSubmit: handleSubmit,
-    validate: Utils.validateSignUp,
+    validate: SignUpService.validateSignUp,
   });
 
   const genderButton = (genderItem: 'male' | 'female' | 'diverse') => {
@@ -48,8 +47,8 @@ export default function SignUp({ authService }: IProps) {
     );
   };
 
-  async function handleSubmit(values: Data.SignUpValues) {
-    const result = await authService.signUp(values);
+  async function handleSubmit(values: SignUpValues) {
+    const result = await auth.service.signUp(values);
     if (result === 201) {
       router.push('/');
     }
@@ -66,7 +65,7 @@ export default function SignUp({ authService }: IProps) {
             type="text"
             name="username"
             value={values.username}
-            onChange={handleChange(Utils.usernameFilter)}
+            onChange={handleChange(SignUpService.usernameFilter)}
             error={errors.username}
           />
 
@@ -79,7 +78,7 @@ export default function SignUp({ authService }: IProps) {
             type="password"
             name="password"
             value={values.password}
-            onChange={handleChange(Utils.passwordFilter)}
+            onChange={handleChange(SignUpService.passwordFilter)}
             error={errors.password}
           />
 
@@ -90,7 +89,7 @@ export default function SignUp({ authService }: IProps) {
             value={values.confirmPassword}
             onChange={(e) => {
               errors.password ||
-                handleChange(Utils.confirmPasswordFilterConstructor(values.password))(e);
+                handleChange(SignUpService.confirmPasswordFilterConstructor(values.password))(e);
             }}
             error={errors.confirmPassword}
           />
@@ -100,7 +99,7 @@ export default function SignUp({ authService }: IProps) {
             type="text"
             name="email"
             value={values.email}
-            onChange={handleChange(Utils.emailFilter)}
+            onChange={handleChange(SignUpService.emailFilter)}
             error={errors.email}
           />
         </div>
@@ -151,7 +150,7 @@ export default function SignUp({ authService }: IProps) {
               value={values.phoneNumberPrefix}
               onChange={handleChange()}
             >
-              {Data.phoneNumberPrefixList.map((n) => (
+              {UserService.phoneNumberPrefixList.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
@@ -173,22 +172,22 @@ export default function SignUp({ authService }: IProps) {
               name="district"
               value={values.district}
               onChange={(e) => {
-                const newDistrict = e.target.value as Data.District;
+                const newDistrict = e.target.value as District;
                 setValues({
                   ...values,
                   district: newDistrict,
-                  suburb: Data.suburbMap[newDistrict][0],
+                  suburb: UserService.suburbMap[newDistrict][0],
                 });
               }}
             >
-              {Data.districtList.map((n) => (
+              {UserService.districtList.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
               ))}
             </select>
             <select name="suburb" value={values.suburb} onChange={handleChange()}>
-              {Data.suburbMap[values.district].map((n) => (
+              {UserService.suburbMap[values.district].map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>

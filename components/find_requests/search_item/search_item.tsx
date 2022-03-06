@@ -1,8 +1,8 @@
 import React from 'react';
-import { RequestsItem } from '../../../data/request';
-import { getDate } from '../../../utils/common';
-import styles from './style.module.css';
+import UtilService from '../../../services/util';
+import styles from './search_item.module.css';
 import Link from 'next/link';
+import { RequestsItem } from '../../../services/request';
 
 interface IProps {
   item: RequestsItem;
@@ -19,7 +19,7 @@ export default function SearchItem({ item }: IProps) {
         <div className={styles.contents}>
           <div>
             <p className={styles.location_time}>
-              {item.suburb}, {item.district} | {getDate(item.createdAt)}
+              {item.suburb}, {item.district} | {UtilService.getDate(item.createdAt)}
             </p>
             <h3>{item.title}</h3>
             <p className={styles.detail}>{item.detail}</p>
