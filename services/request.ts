@@ -1,4 +1,3 @@
-import { NextRouter } from 'next/router';
 import { District, Suburb } from './user';
 
 export type JobCategory = typeof RequestService.jobCategoryList[number];
@@ -101,11 +100,11 @@ export default class RequestService {
     return (await response).url;
   }
 
-  static handleSubmitConstructor(token: string, urlBase: string, router: NextRouter) {
+  static handleSubmitConstructor(token: string, urlBase: string, push: Function) {
     return async (values: RequestValues) => {
       const result = await RequestService.postRequest(`${urlBase}/jobs`, values, token);
       if (result.id) {
-        router.push(`/request/${result.id}`);
+        push(`/request/${result.id}`);
       }
     };
   }

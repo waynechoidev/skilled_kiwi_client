@@ -1,5 +1,3 @@
-import { NextRouter } from 'next/router';
-import { AuthProviderValue } from '../context/auth';
 import { District, Suburb } from './user';
 
 export type SignUpValues = {
@@ -33,13 +31,11 @@ export type SignUpErrorValues = {
 
 export default class SignUpService {
   private urlBase: string;
-  private auth: AuthProviderValue;
-  private router: NextRouter;
+  private push: Function;
 
-  constructor(urlBase: string, auth: AuthProviderValue, router: NextRouter) {
+  constructor(urlBase: string, push: Function) {
     this.urlBase = urlBase;
-    this.auth = auth;
-    this.router = router;
+    this.push = push;
   }
 
   public async usernameFilter(username: string) {
@@ -117,10 +113,24 @@ export default class SignUpService {
   }
 
   public async handleSubmit(values: SignUpValues) {
-    const result = await this.auth.service.signUp(values);
+    const result = await this.signUp(values);
     if (result === 201) {
-      this.router.push('/');
+      this.push('/');
     }
+  }
+
+  private async signUp(values: SignUpValues) {
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(values),
+    };
+
+    const response = await fetch(`${this.urlBase}/auth/sign_up`, requestOptions);
+    return response.status;
   }
 
   private async checkValidUsername(username: string): Promise<boolean> {

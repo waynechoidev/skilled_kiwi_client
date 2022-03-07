@@ -8,7 +8,7 @@ export default class UtilService {
     else return (bytes / Math.pow(1024, Math.floor(e))).toFixed(2) + ' ' + s[e];
   }
 
-  static fetcher(url: string) {
+  static async fetcher(url: string) {
     return fetch(url).then((res) => res.json());
   }
 

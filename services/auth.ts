@@ -1,12 +1,10 @@
-import { SignUpValues } from './sign_up';
-
-interface SignInResult {
+type SignInResult = {
   message?: string;
-  accessToken?: string;
-  refreshToken?: string;
-  expiredTime?: string;
-  userId?: string;
-}
+  accessToken: string;
+  refreshToken: string;
+  expiredTime: string;
+  userId: string;
+};
 
 export type AuthStatus = {
   token: string;
@@ -78,19 +76,6 @@ export default class AuthService {
       return result.message;
     }
   }
-  public async signUp(values: SignUpValues) {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-
-    const requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify(values),
-    };
-
-    const response = await fetch(`${this.urlBase}/auth/sign_up`, requestOptions);
-    return response.status;
-  }
   public signOut() {
     const storage = this.window.localStorage.getItem('stored') ? 'localStorage' : 'sessionStorage';
 
@@ -107,6 +92,7 @@ export default class AuthService {
     this.isAuth = 'no';
     this.update();
   }
+
   private async reIssueToken(userId: string, refreshToken: string): Promise<string | undefined> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -131,7 +117,6 @@ export default class AuthService {
       return result.message;
     }
   }
-
   private isAccessTokenExpired(expiredTime?: string) {
     if (!expiredTime) {
       return 'yes';
@@ -177,6 +162,7 @@ export default class AuthService {
     const status: AuthStatus = { token: this.accessToken!, isAuth: this.isAuth! };
     this.setStatus(status);
   }
+
   public static getInstance() {
     return this._instance || (this._instance = new this());
   }

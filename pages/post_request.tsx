@@ -40,7 +40,7 @@ export default function PostRequest({ urlBase }: IProps) {
       pay: 21.2,
       images: [],
     },
-    onSubmit: RequestService.handleSubmitConstructor(token, urlBase, router),
+    onSubmit: RequestService.handleSubmitConstructor(token, urlBase, router.push),
     validate: RequestService.validateSubmitRequest,
   });
 

@@ -1,7 +1,7 @@
 import { createContext, ReactChild, useEffect, useState } from 'react';
 import AuthService, { AuthStatus } from '../services/auth';
 
-interface AuthProviderValue extends AuthStatus {
+export interface AuthProviderValue extends AuthStatus {
   service: AuthService;
 }
 const authServiceInstance = AuthService.getInstance();

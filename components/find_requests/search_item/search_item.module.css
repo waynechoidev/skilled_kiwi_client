@@ -15,18 +15,18 @@
 }
 
 .image_wrapper {
-  height: 150px;
+  height: 200px;
   background-color: #d3d3d3;
 }
 .image_wrapper img {
-  width: 200px;
-  height: 150px;
+  width: 250px;
+  height: 200px;
   object-fit: contain;
 }
 
 .contents {
   padding: 10px;
-  height: 150px;
+  height: 200px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -40,6 +40,8 @@
 }
 .detail {
   margin: 0;
+  max-height: 100px;
+  overflow-y: scroll;
 }
 
 .pay {
