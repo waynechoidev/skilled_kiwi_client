@@ -8,10 +8,14 @@ import SignUpService, { SignUpErrorValues, SignUpValues } from '../services/sign
 import UserService, { District } from '../services/user';
 import styles from '../styles/sign_up.module.css';
 
-export default function SignUp() {
-  const auth = useContext(authContext);
+interface IProps {
+  urlBase: string;
+}
 
+export default function SignUp({ urlBase }: IProps) {
+  const auth = useContext(authContext);
   const router = useRouter();
+  const signUp = new SignUpService(urlBase, auth, router);
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
     SignUpValues,
     SignUpErrorValues
@@ -30,8 +34,8 @@ export default function SignUp() {
       district: 'Auckland',
       suburb: 'Albany',
     },
-    onSubmit: handleSubmit,
-    validate: SignUpService.validateSignUp,
+    onSubmit: signUp.handleSubmit,
+    validate: signUp.validateSignUp,
   });
 
   const genderButton = (genderItem: 'male' | 'female' | 'diverse') => {
@@ -46,12 +50,6 @@ export default function SignUp() {
     );
   };
 
-  async function handleSubmit(values: SignUpValues) {
-    const result = await auth.service.signUp(values);
-    if (result === 201) {
-      router.push('/');
-    }
-  }
   return (
     <div className={styles.container}>
       <h1>Create Account</h1>
@@ -64,7 +62,7 @@ export default function SignUp() {
             type="text"
             name="username"
             value={values.username}
-            onChange={handleChange(SignUpService.usernameFilter)}
+            onChange={handleChange(signUp.usernameFilter)}
             error={errors.username}
           />
 
@@ -77,7 +75,7 @@ export default function SignUp() {
             type="password"
             name="password"
             value={values.password}
-            onChange={handleChange(SignUpService.passwordFilter)}
+            onChange={handleChange(signUp.passwordFilter)}
             error={errors.password}
           />
 
@@ -88,7 +86,7 @@ export default function SignUp() {
             value={values.confirmPassword}
             onChange={(e) => {
               errors.password ||
-                handleChange(SignUpService.confirmPasswordFilterConstructor(values.password))(e);
+                handleChange(signUp.confirmPasswordFilterConstructor(values.password))(e);
             }}
             error={errors.confirmPassword}
           />
@@ -98,7 +96,7 @@ export default function SignUp() {
             type="text"
             name="email"
             value={values.email}
-            onChange={handleChange(SignUpService.emailFilter)}
+            onChange={handleChange(signUp.emailFilter)}
             error={errors.email}
           />
         </div>

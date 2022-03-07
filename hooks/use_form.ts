@@ -9,9 +9,9 @@ function useForm<Status, ErrorStatus>({
 }: {
   initialValues: Status;
   onSubmit: (values: Status) => void;
-  validate: (values: Status) => Promise<ErrorStatus>;
+  validate: (values: Status) => Promise<ErrorStatus> | ErrorStatus;
 }) {
-  const [values, setValues] = useState(initialValues);
+  const [values, setValues] = useState<Status>(initialValues);
   const [errors, setErrors] = useState<ErrorStatus>({} as ErrorStatus);
   const [isLoading, setIsLoading] = useState(false);
   const handleChange =

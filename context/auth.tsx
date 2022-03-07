@@ -10,10 +10,14 @@ const initialValue: AuthProviderValue = { ...initialStatus, service: authService
 
 export const authContext = createContext<AuthProviderValue>(initialValue);
 
-const AuthProvider = ({ children }: { children: ReactChild }) => {
+interface IProps {
+  children: ReactChild;
+  urlBase: string;
+}
+
+const AuthProvider = ({ children, urlBase }: IProps) => {
   const [status, setStatus] = useState<AuthStatus>(initialStatus);
 
-  const urlBase = 'http://localhost:8080';
   const date = new Date();
   useEffect(() => {
     authServiceInstance?.init(urlBase, window, date, setStatus);

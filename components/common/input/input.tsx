@@ -4,7 +4,7 @@ import styles from './input.module.css';
 interface IProps {
   type: HTMLInputTypeAttribute;
   name: string;
-  value: string;
+  value: string | number;
   onChange: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
 }
 export default function Input({ type, name, value, onChange }: IProps) {

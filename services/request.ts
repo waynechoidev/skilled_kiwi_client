@@ -1,3 +1,4 @@
+import { NextRouter } from 'next/router';
 import { District, Suburb } from './user';
 
 export type JobCategory = typeof RequestService.jobCategoryList[number];
@@ -7,6 +8,7 @@ export type RequestValues = {
   suburb: Suburb;
   category: JobCategory;
   detail: string;
+  pay: number;
   images: string[];
 };
 export type RequestErrorValues = {
@@ -56,6 +58,7 @@ export default class RequestService {
       return 'Please enter at least 10 characters.';
     }
   }
+
   static detailFilter(detail: string) {
     if (!detail) {
       return 'Please fill up the detail.';
@@ -63,6 +66,7 @@ export default class RequestService {
       return 'Please enter at least 20 characters.';
     }
   }
+
   static async validateSubmitRequest(values: RequestValues) {
     const errors: RequestErrorValues = {};
 
@@ -78,6 +82,7 @@ export default class RequestService {
 
     return errors;
   }
+
   static async uploadImage(file: File) {
     const formData = new FormData();
     formData.append(`file`, file);
@@ -95,6 +100,16 @@ export default class RequestService {
 
     return (await response).url;
   }
+
+  static handleSubmitConstructor(token: string, urlBase: string, router: NextRouter) {
+    return async (values: RequestValues) => {
+      const result = await RequestService.postRequest(`${urlBase}/jobs`, values, token);
+      if (result.id) {
+        router.push(`/request/${result.id}`);
+      }
+    };
+  }
+
   static async postRequest(url: string, values: RequestValues, token: string) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');

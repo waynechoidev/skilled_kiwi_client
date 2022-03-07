@@ -1,8 +1,3 @@
-//ToDO
-//set routing after submit
-//refactor logic to modularize
-//Modularize request
-
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import ErrorMessage from '../components/common/error_message/error_message';
@@ -19,8 +14,11 @@ import RequestService, {
 } from '../services/request';
 import UserService, { District } from '../services/user';
 
-export default function PostRequest() {
-  const urlBase = 'adf';
+interface IProps {
+  urlBase: string;
+}
+
+export default function PostRequest({ urlBase }: IProps) {
   const auth = useContext(authContext);
   const { isAuth, token } = auth;
   const router = useRouter();
@@ -29,7 +27,7 @@ export default function PostRequest() {
   const [isImageLoading, setIsImageUploading] = useState(false);
   const [images, setImages] = useState<RequestImage[]>([]);
 
-  const { values, setValues, errors, handleChange, submitHandle } = useForm<
+  const { values, setValues, errors, setErrors, handleChange, submitHandle } = useForm<
     RequestValues,
     RequestErrorValues
   >({
@@ -39,14 +37,13 @@ export default function PostRequest() {
       suburb: 'Albany',
       category: 'repair',
       detail: '',
+      pay: 21.2,
       images: [],
     },
-    onSubmit: async () => {
-      const result = await RequestService.postRequest(`${urlBase}/jobs`, values, token);
-      console.log(result);
-    },
+    onSubmit: RequestService.handleSubmitConstructor(token, urlBase, router),
     validate: RequestService.validateSubmitRequest,
   });
+
   useEffect(() => {
     if (isAuth === 'no') {
       router.push('/sign_in?back_to=post_request');
@@ -116,6 +113,9 @@ export default function PostRequest() {
             </option>
           ))}
         </select>
+
+        <h2>Pay per hour</h2>
+        <Input type="number" name="pay" value={values.pay} onChange={handleChange()} />
 
         <h2>Images to describe your request</h2>
         <div className={styles.image_upload}>

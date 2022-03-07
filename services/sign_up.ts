@@ -1,3 +1,5 @@
+import { NextRouter } from 'next/router';
+import { AuthProviderValue } from '../context/auth';
 import { District, Suburb } from './user';
 
 export type SignUpValues = {
@@ -29,22 +31,30 @@ export type SignUpErrorValues = {
   suburb?: string;
 };
 
-const urlBase = 'http://localhost:8080';
-
 export default class SignUpService {
-  static async usernameFilter(username: string) {
+  private urlBase: string;
+  private auth: AuthProviderValue;
+  private router: NextRouter;
+
+  constructor(urlBase: string, auth: AuthProviderValue, router: NextRouter) {
+    this.urlBase = urlBase;
+    this.auth = auth;
+    this.router = router;
+  }
+
+  public async usernameFilter(username: string) {
     if (!username) {
       return 'Please fill up username';
     } else if (username.length < 6 || username.length > 20) {
       return 'Choose a username 6 - 20 characters long.';
     } else {
-      if (!(await SignUpService.checkValidUsername(username))) {
+      if (!(await this.checkValidUsername(username))) {
         return `The username, ${username}, is already exist.`;
       }
     }
   }
 
-  static passwordFilter(password: string) {
+  public passwordFilter(password: string) {
     if (!password) {
       return 'Please fill up password';
     } else if (!/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,20}$/.test(password)) {
@@ -52,7 +62,7 @@ export default class SignUpService {
     }
   }
 
-  static confirmPasswordFilterConstructor(password: string) {
+  public confirmPasswordFilterConstructor(password: string) {
     return (confirmPassword: string) => {
       if (!confirmPassword) {
         return 'Please fill up confirm password';
@@ -62,19 +72,19 @@ export default class SignUpService {
     };
   }
 
-  static async emailFilter(email: string) {
+  public async emailFilter(email: string) {
     if (!email) {
       return 'Please fill up email address.';
     } else if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
       return 'The email address is not valid.';
     } else {
-      if (!(await SignUpService.checkValidEmail(email))) {
+      if (!(await this.checkValidEmail(email))) {
         return `This email address is already taken.`;
       }
     }
   }
 
-  static async validateSignUp(values: SignUpValues) {
+  public async validateSignUp(values: SignUpValues) {
     const errors: SignUpErrorValues = {};
 
     const keys = Object.keys(values) as Array<keyof typeof values>;
@@ -84,21 +94,21 @@ export default class SignUpService {
       }
     });
 
-    const usernameError = await SignUpService.usernameFilter(values.username);
+    const usernameError = await this.usernameFilter(values.username);
     if (usernameError) {
       errors.username = usernameError;
     }
-    const passwordError = SignUpService.passwordFilter(values.password);
+    const passwordError = this.passwordFilter(values.password);
     if (passwordError) {
       errors.username = usernameError;
     }
-    const confirmPasswordError = SignUpService.confirmPasswordFilterConstructor(values.password)(
+    const confirmPasswordError = this.confirmPasswordFilterConstructor(values.password)(
       values.password[1]
     );
     if (confirmPasswordError) {
       errors.confirmPassword = confirmPasswordError;
     }
-    const emailError = await SignUpService.emailFilter(values.email);
+    const emailError = await this.emailFilter(values.email);
     if (emailError) {
       errors.email = emailError;
     }
@@ -106,7 +116,14 @@ export default class SignUpService {
     return errors;
   }
 
-  private static async checkValidUsername(username: string): Promise<boolean> {
+  public async handleSubmit(values: SignUpValues) {
+    const result = await this.auth.service.signUp(values);
+    if (result === 201) {
+      this.router.push('/');
+    }
+  }
+
+  private async checkValidUsername(username: string): Promise<boolean> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -116,13 +133,13 @@ export default class SignUpService {
     };
 
     const response: { isValid: boolean } = await (
-      await fetch(`${urlBase}/auth/check_username/${username}`, requestOptions)
+      await fetch(`${this.urlBase}/auth/check_username/${username}`, requestOptions)
     ).json();
 
     return response.isValid;
   }
 
-  private static async checkValidEmail(email: string): Promise<boolean> {
+  private async checkValidEmail(email: string): Promise<boolean> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -132,7 +149,7 @@ export default class SignUpService {
     };
 
     const response: { isValid: boolean } = await (
-      await fetch(`${urlBase}/auth/check_email/${email}`, requestOptions)
+      await fetch(`${this.urlBase}/auth/check_email/${email}`, requestOptions)
     ).json();
 
     return response.isValid;

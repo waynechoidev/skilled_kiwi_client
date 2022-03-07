@@ -15,11 +15,13 @@ interface IProps {
 export default function FindRequests({ urlBase }: IProps) {
   const [isHidingSearchTool, setIsHidingSearchTool] = useState(true);
   const [query, setQuery] = useState('');
+
   const { data, error } = useSWR<RequestsItem[]>(
     () => `${urlBase}/jobs${query}`,
     UtilService.fetcher
   );
-  const { values, setValues, errors, handleChange, submitHandle } = useForm<SearchValues, {}>({
+
+  const { values, setValues, handleChange, submitHandle } = useForm<SearchValues, {}>({
     initialValues: {
       keyword: '',
       district: 'All Location',
@@ -46,8 +48,10 @@ export default function FindRequests({ urlBase }: IProps) {
     },
     validate: async () => ({}),
   });
+
   if (error) return 'An error has occurred.';
   if (!data) return 'Loading...';
+
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>

@@ -12,9 +12,9 @@ export default function SignIn() {
 
   const auth = useContext(authContext);
   const isAuth = auth.isAuth;
-
   const router = useRouter();
   const { back_to } = router.query;
+
   function goBack() {
     let target: string | undefined;
     if (typeof back_to === 'object') {
