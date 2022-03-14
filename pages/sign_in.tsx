@@ -62,7 +62,7 @@ export default function SignIn() {
           <input
             type="username"
             name="username"
-            value={username}
+            value={username.toLowerCase()}
             onChange={(e) => {
               setUsername(e.target.value);
             }}

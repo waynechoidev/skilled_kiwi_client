@@ -17,7 +17,10 @@ function useForm<Status, ErrorStatus>({
   const handleChange =
     (filter?: Filter) =>
     (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target;
+      let { name, value } = e.target;
+      if (name === 'username') {
+        value = value.toLowerCase();
+      }
       setValues({ ...values, [name]: value });
       if (filter) {
         setTimeout(async () => {

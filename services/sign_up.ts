@@ -38,7 +38,9 @@ export default class SignUpService {
     this.push = push;
   }
 
-  public async usernameFilter(username: string) {
+  public usernameFilter = async (username: string) => {
+    console.log(this.urlBase);
+
     if (!username) {
       return 'Please fill up username';
     } else if (username.length < 6 || username.length > 20) {
@@ -48,7 +50,7 @@ export default class SignUpService {
         return `The username, ${username}, is already exist.`;
       }
     }
-  }
+  };
 
   public passwordFilter(password: string) {
     if (!password) {
@@ -68,7 +70,7 @@ export default class SignUpService {
     };
   }
 
-  public async emailFilter(email: string) {
+  public emailFilter = async (email: string) => {
     if (!email) {
       return 'Please fill up email address.';
     } else if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
@@ -78,9 +80,9 @@ export default class SignUpService {
         return `This email address is already taken.`;
       }
     }
-  }
+  };
 
-  public async validateSignUp(values: SignUpValues) {
+  public validateSignUp = async (values: SignUpValues) => {
     const errors: SignUpErrorValues = {};
 
     const keys = Object.keys(values) as Array<keyof typeof values>;
@@ -110,7 +112,7 @@ export default class SignUpService {
     }
 
     return errors;
-  }
+  };
 
   public async handleSubmit(values: SignUpValues) {
     const result = await this.signUp(values);
