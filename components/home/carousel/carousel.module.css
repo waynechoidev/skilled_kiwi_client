@@ -2,12 +2,13 @@
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
   position: relative;
   animation: fader 2s;
 }
 
 .card_wrapper {
+  overflow: hidden;
   width: 300%;
   display: flex;
   margin: 0;
@@ -57,7 +58,7 @@
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, 10%);
   padding: 0;
   margin: 0;
   list-style: none;
@@ -82,5 +83,66 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (max-width: 1025px) {
+  .msg_wrapper {
+    font-size: 3rem;
+  }
+  .msg_wrapper b {
+    font-size: 4rem;
+  }
+  .container {
+    padding-bottom: 70px;
+  }
+  .button {
+    color: var(--light-grey-font);
+  }
+  .selected_button {
+    color: var(--grey-font);
+  }
+}
+@media (max-width: 769px) {
+  .msg_wrapper {
+    font-size: 2rem;
+    line-height: 120%;
+  }
+  .msg_wrapper b {
+    font-size: 3rem;
+  }
+  .msg_wrapper button {
+    font-size: 1rem;
+  }
+  .button_wrapper li {
+    font-size: 3.5rem;
+  }
+  .container {
+    padding-bottom: 50px;
+  }
+}
+@media (max-width: 480px) {
+  .msg_wrapper {
+    font-size: 1.5rem;
+    line-height: 120%;
+  }
+  .msg_wrapper b {
+    font-size: 2.5rem;
+  }
+  .msg_wrapper button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+  .button_wrapper li {
+    font-size: 3rem;
+  }
+  .container {
+    padding-bottom: 40px;
+  }
+}
+
+@media (max-width: 400px) {
+  .msg_wrapper b {
+    font-size: 2rem;
   }
 }
