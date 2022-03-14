@@ -14,7 +14,7 @@ export default function Header() {
   const menus: menu[] = [
     { name: 'Find Requests', src: '/find_requests' },
     { name: 'Post a Request', src: '/post_request' },
-    { name: 'Life Hack', src: '' },
+    { name: 'Life Hack', src: '/life_hack' },
   ];
   return (
     <header className={styles.container}>
