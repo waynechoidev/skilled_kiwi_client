@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import styles from '../styles/sign_in.module.css';
 import { authContext } from '../context/auth';
+import Link from 'next/link';
 
 export default function SignIn() {
   const [username, setUsername] = useState('');
@@ -52,7 +53,11 @@ export default function SignIn() {
   return (
     <div className={styles.container}>
       <div className={styles.window}>
-        <img src="/img/logo.png" />
+        <Link href="/">
+          <a href="/" className={styles.logo}>
+            <img src="/img/logo.png" />
+          </a>
+        </Link>
         <form onSubmit={handleSubmit}>
           <input
             type="username"
@@ -87,13 +92,22 @@ export default function SignIn() {
               />
               Stay Signed In
             </span>
-            <a>Forgot Password?</a>
+            <a
+              onClick={() => {
+                alert('Please contact xxx@google.com');
+              }}
+            >
+              Forgot Password?
+            </a>
           </div>
           {!isHideError && <div className={styles.error}>{errorMsg}</div>}
           <input type="submit" value="Sign In" className={`${styles.button} ${styles.input_box}`} />
         </form>
         <div className={styles.footer}>
-          Don't have an account? <a>Sign Up</a>
+          Don't have an account?{' '}
+          <Link href="/sign_up">
+            <a href="/sign_up">Sign Up</a>
+          </Link>
         </div>
       </div>
     </div>

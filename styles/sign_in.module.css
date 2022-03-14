@@ -2,11 +2,13 @@
   width: 100%;
   height: 100%;
   display: flex;
+  justify-content: center;
   background-color: var(--grey-bg);
 }
 
 .container a {
   color: #007fed;
+  cursor: pointer;
 }
 
 .window {
@@ -21,9 +23,14 @@
   padding: 10px;
 }
 
-.window img {
-  height: 40px;
+.logo {
+  display: flex;
+  justify-content: center;
+  width: 240px;
   margin: 20px auto;
+}
+.logo img {
+  width: 100%;
 }
 
 .window form {
