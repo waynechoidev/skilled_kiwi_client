@@ -123,4 +123,5 @@ export default class RequestService {
     const response = await fetch(url, requestOptions);
     return response.json();
   }
+  //TODO make return type for postRequest method
 }

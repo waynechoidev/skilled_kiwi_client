@@ -7,7 +7,7 @@ import { useContext } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;
-  const urlBase = 'http://localhost:8080';
+  const urlBase = 'http://skilledkiwi.herokuapp.com';
 
   const auth = useContext(authContext);
   const isAuth = auth.isAuth;

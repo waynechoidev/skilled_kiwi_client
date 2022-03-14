@@ -92,6 +92,9 @@ export default class AuthService {
     this.isAuth = 'no';
     this.update();
   }
+  public getUserId() {
+    return this.userId;
+  }
 
   private async reIssueToken(userId: string, refreshToken: string): Promise<string | undefined> {
     const myHeaders = new Headers();

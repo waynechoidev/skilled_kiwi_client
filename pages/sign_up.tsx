@@ -13,7 +13,6 @@ interface IProps {
 }
 
 export default function SignUp({ urlBase }: IProps) {
-  const auth = useContext(authContext);
   const router = useRouter();
   const signUp = new SignUpService(urlBase, router.push);
   const { values, setValues, errors, handleChange, submitHandle } = useForm<

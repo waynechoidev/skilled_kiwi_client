@@ -1,18 +1,29 @@
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import styles from '../../styles/request.module.css';
 import Link from 'next/link';
 import UtilService from '../../services/util';
 import { RequestsItem } from '../../services/request';
+import { authContext } from '../../context/auth';
 interface IProps {
   urlBase: string;
 }
 export default function Request({ urlBase }: IProps) {
+  const [isAuth, setIsAuth] = useState(false);
   const router = useRouter();
   const { id } = router.query;
   const { data, error } = useSWR<RequestsItem>(() => `${urlBase}/jobs/${id}`, UtilService.fetcher);
-  console.log(data);
+
+  const auth = useContext(authContext);
+  useEffect(() => {
+    if (auth.isAuth === 'yes') {
+      const userId = auth.service.getUserId();
+      setIsAuth(userId == data?.userId);
+    }
+  }, [auth, data]);
+  //Now Response of userId for signIn is string, but one for getJob is number.
+  //Fix it later (=== than ==)
 
   if (error) return 'An error has occurred.';
   if (!data) return 'Loading...';
@@ -59,8 +70,8 @@ export default function Request({ urlBase }: IProps) {
           </div>
           {data.images[0] && (
             <div className={styles.image_wrapper}>
-              {data.images.map((img) => (
-                <img src={img} />
+              {data.images.map((img, index) => (
+                <img key={index} src={img} />
               ))}
             </div>
           )}
@@ -74,7 +85,7 @@ export default function Request({ urlBase }: IProps) {
           </p>
           <p>
             <b>Member Since: </b>
-            {data.username}
+            {UtilService.getDateAndYear(data.createdAt)}
           </p>
         </div>
       </div>

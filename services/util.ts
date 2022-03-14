@@ -26,4 +26,9 @@ export default class UtilService {
     hour = hour < 12 ? hour : hour - 12;
     return `${newDate[0]}, ${newDate[1]} ${newDate[2]}, ${hour}:${minutes}${amPm}`;
   }
+
+  static getDateAndYear(dateStr: string) {
+    const newDate = new Date(dateStr).toDateString().split(' ');
+    return `${newDate[1]}, ${newDate[2]} ${newDate[3]}`;
+  }
 }
