@@ -17,7 +17,7 @@ export default function SearchItem({ item }: IProps) {
           <img src={imgSrc} />
         </div>
         <div className={styles.contents}>
-          <div>
+          <div className={styles.info}>
             <p className={styles.location_time}>
               {item.suburb}, {item.district} | {UtilService.getDate(item.createdAt)}
             </p>
