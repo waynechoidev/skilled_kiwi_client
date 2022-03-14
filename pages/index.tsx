@@ -13,6 +13,70 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Carousel cardList={cardList} />
+      <div className={styles.contents}>
+        <h2>Need hands?</h2>
+        <div className={styles.procedure}>
+          <span>
+            <h3>Post a request</h3>
+            <div>
+              It is a free and easy to post a request. Fill up a title and little detail for your
+              job. You can attach photos if you want.
+            </div>
+          </span>
+          <span>
+            <h3>Pick a service provider</h3>
+            <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </div>
+          </span>
+          <span>
+            <h3>Contact him / her</h3>
+            <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </div>
+          </span>
+          <span>
+            <h3>Jobs Done</h3>
+            <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </div>
+          </span>
+        </div>
+        <h2>You're skilled!</h2>
+        <div className={styles.procedure}>
+          <span>
+            <h3>Pick a request</h3>
+            <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </div>
+          </span>
+          <span>
+            <h3>Place a bid</h3>
+            <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </div>
+          </span>
+          <span>
+            <h3>Contact him / her</h3>
+            <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </div>
+          </span>
+          <span>
+            <h3>Jobs Done</h3>
+            <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </div>
+          </span>
+        </div>
+      </div>
     </div>
   );
 };

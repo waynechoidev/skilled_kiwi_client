@@ -2,3 +2,26 @@
   margin: 0;
   padding: 0;
 }
+
+.contents {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.contents h2 {
+  font-size: 2.5rem;
+  color: var(--dark-font);
+}
+
+.procedure {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  border-bottom: 1px solid var(--light-grey-font);
+  padding-bottom: 50px;
+  margin-bottom: 50px;
+}
+.procedure span {
+  width: calc(25% - 10px);
+}
