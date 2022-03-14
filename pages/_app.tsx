@@ -2,15 +2,11 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '../components/common/layout';
 import { useRouter } from 'next/router';
-import AuthProvider, { authContext } from '../context/auth';
-import { useContext } from 'react';
+import AuthProvider from '../context/auth';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;
   const urlBase = 'http://skilledkiwi.herokuapp.com';
-
-  const auth = useContext(authContext);
-  const isAuth = auth.isAuth;
 
   return (
     <AuthProvider urlBase={urlBase}>

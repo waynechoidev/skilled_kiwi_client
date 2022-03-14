@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 interface Card {
   bg: string;
   msg: Function;
@@ -12,7 +14,11 @@ export const cardList: Card[] = [
         <br />
         <b>Skilled hands!</b>
         <div>
-          <button>Find Someone to help</button>
+          <Link href="/post_request">
+            <a href="/post_request">
+              <button>Find Someone to help</button>
+            </a>
+          </Link>
         </div>
       </div>
     ),
@@ -27,8 +33,16 @@ export const cardList: Card[] = [
         <br />
         in the community
         <div>
-          <button>Find Requests</button>
-          <button>Post a Request</button>
+          <Link href="/find_requests">
+            <a href="/find_requests">
+              <button>Find Requests</button>
+            </a>
+          </Link>
+          <Link href="/post_request">
+            <a href="/post_request">
+              <button>Post a Request</button>
+            </a>
+          </Link>
         </div>
       </div>
     ),
@@ -43,7 +57,11 @@ export const cardList: Card[] = [
         <br />
         <b>We need you!</b>
         <div>
-          <button>Make extra money</button>
+          <Link href="/find_requests">
+            <a href="/find_requests">
+              <button>Make extra money</button>
+            </a>
+          </Link>
         </div>
       </div>
     ),

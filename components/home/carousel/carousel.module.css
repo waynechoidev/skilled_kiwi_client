@@ -17,6 +17,9 @@
 .card {
   position: relative;
 }
+.card button {
+  cursor: pointer;
+}
 .card_img {
   width: 100%;
   z-index: -1;
