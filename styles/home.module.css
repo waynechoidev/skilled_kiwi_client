@@ -24,6 +24,13 @@
   padding-bottom: 50px;
   margin-bottom: 50px;
 }
+.procedure_subject {
+  display: flex;
+  align-items: center;
+}
+.procedure_subject img {
+  padding-right: 10px;
+}
 
 @media (max-width: 768px) {
   .procedure {

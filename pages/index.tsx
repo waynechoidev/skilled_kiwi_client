@@ -17,28 +17,40 @@ const Home: NextPage = () => {
         <h2>Need hands?</h2>
         <div className={styles.procedure}>
           <span>
-            <h3>Post a request</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/post.svg" />
+              <h3>Post a request</h3>
+            </div>
             <div>
               It is a free and easy to post a request. Fill up a title and little detail for your
               job. You can attach photos if you want.
             </div>
           </span>
           <span>
-            <h3>Pick a service provider</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/pick.svg" />
+              <h3>Pick a provider</h3>
+            </div>
             <div>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua.
             </div>
           </span>
           <span>
-            <h3>Contact him / her</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/contact.svg" />
+              <h3>Contact</h3>
+            </div>
             <div>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua.
             </div>
           </span>
           <span>
-            <h3>Jobs Done</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/done.svg" />
+              <h3>Jobs Done</h3>
+            </div>
             <div>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua.
@@ -48,28 +60,40 @@ const Home: NextPage = () => {
         <h2>You're skilled!</h2>
         <div className={styles.procedure}>
           <span>
-            <h3>Pick a request</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/pick.svg" />
+              <h3>Pick a request</h3>
+            </div>
             <div>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua.
             </div>
           </span>
           <span>
-            <h3>Place a bid</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/bid.svg" />
+              <h3>Place a bid</h3>
+            </div>
             <div>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua.
             </div>
           </span>
           <span>
-            <h3>Contact him / her</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/contact.svg" />
+              <h3>Contact</h3>
+            </div>
             <div>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua.
             </div>
           </span>
           <span>
-            <h3>Jobs Done</h3>
+            <div className={styles.procedure_subject}>
+              <img src="/img/icon/done.svg" />
+              <h3>Jobs Done</h3>
+            </div>
             <div>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua.
