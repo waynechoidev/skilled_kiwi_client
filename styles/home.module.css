@@ -25,7 +25,7 @@
   margin-bottom: 50px;
 }
 
-@media (max-width: 769px) {
+@media (max-width: 768px) {
   .procedure {
     grid-template-columns: repeat(2, 1fr);
   }

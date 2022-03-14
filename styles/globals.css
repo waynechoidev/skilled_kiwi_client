@@ -34,3 +34,15 @@ input {
 p {
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  #__next {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  #__next::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+}
