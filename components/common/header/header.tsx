@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import React, { useContext } from 'react';
 import { authContext } from '../../../context/auth';
 import styles from './header.module.css';
@@ -16,34 +16,28 @@ export default function Header() {
     { name: 'Post a Request', src: '/post_request' },
     { name: 'Life Hack', src: '' },
   ];
-
-  const router = useRouter();
   return (
     <header className={styles.container}>
       <div className={styles.logo_area}>
-        <img
-          src="/img/logo.png"
-          onClick={() => {
-            router.push('/');
-          }}
-        />
+        <Link href="/">
+          <a href="/">
+            <img src="/img/logo.png" />
+          </a>
+        </Link>
+
         <div className={styles.auth}>
           {isAuth === 'no' ? (
             <>
-              <span
-                onClick={() => {
-                  router.push('/sign_in');
-                }}
-              >
-                Sign In
-              </span>
-              <span
-                onClick={() => {
-                  router.push('/sign_up');
-                }}
-              >
-                Sign Up
-              </span>
+              <Link href="/sign_in">
+                <a href="/sign_in">
+                  <span>Sign In</span>
+                </a>
+              </Link>
+              <Link href="/sign_up">
+                <a href="/sign_up">
+                  <span>Sign Up</span>
+                </a>
+              </Link>
             </>
           ) : (
             <span
@@ -59,14 +53,11 @@ export default function Header() {
       <div className={styles.menu_bar}>
         <div className={styles.menu_wrapper}>
           {menus.map((menu, i) => (
-            <span
-              key={i}
-              onClick={() => {
-                router.push(menu.src);
-              }}
-            >
-              {menu.name}
-            </span>
+            <Link href={menu.src} key={i}>
+              <a href={menu.src}>
+                <span>{menu.name}</span>
+              </a>
+            </Link>
           ))}
         </div>
       </div>

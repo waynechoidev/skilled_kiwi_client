@@ -12,7 +12,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   const auth = useContext(authContext);
   const isAuth = auth.isAuth;
 
-  console.log(isAuth);
   return (
     <AuthProvider urlBase={urlBase}>
       {pathName === '/sign_in' ? (
