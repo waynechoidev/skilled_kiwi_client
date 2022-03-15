@@ -14,7 +14,6 @@ interface IProps {
 
 export default function SignUp({ urlBase }: IProps) {
   const router = useRouter();
-  const signUp = new SignUpService(urlBase, router.push);
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
     SignUpValues,
     SignUpErrorValues
@@ -33,8 +32,8 @@ export default function SignUp({ urlBase }: IProps) {
       district: 'Auckland',
       suburb: 'Albany',
     },
-    onSubmit: signUp.handleSubmit,
-    validate: signUp.validateSignUp,
+    onSubmit: SignUpService.handleSubmit(urlBase, router.push),
+    validate: SignUpService.validateSignUp(urlBase),
   });
 
   const genderButton = (genderItem: 'male' | 'female' | 'diverse') => {
@@ -61,7 +60,7 @@ export default function SignUp({ urlBase }: IProps) {
             type="text"
             name="username"
             value={values.username}
-            onChange={handleChange(signUp.usernameFilter)}
+            onChange={handleChange(SignUpService.usernameFilter(urlBase))}
             error={errors.username}
           />
 
@@ -74,7 +73,7 @@ export default function SignUp({ urlBase }: IProps) {
             type="password"
             name="password"
             value={values.password}
-            onChange={handleChange(signUp.passwordFilter)}
+            onChange={handleChange(SignUpService.passwordFilter)}
             error={errors.password}
           />
 
@@ -85,7 +84,7 @@ export default function SignUp({ urlBase }: IProps) {
             value={values.confirmPassword}
             onChange={(e) => {
               errors.password ||
-                handleChange(signUp.confirmPasswordFilterConstructor(values.password))(e);
+                handleChange(SignUpService.confirmPasswordFilterConstructor(values.password))(e);
             }}
             error={errors.confirmPassword}
           />
@@ -95,7 +94,7 @@ export default function SignUp({ urlBase }: IProps) {
             type="text"
             name="email"
             value={values.email}
-            onChange={handleChange(signUp.emailFilter)}
+            onChange={handleChange(SignUpService.emailFilter(urlBase))}
             error={errors.email}
           />
         </div>

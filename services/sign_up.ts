@@ -30,37 +30,29 @@ export type SignUpErrorValues = {
 };
 
 export default class SignUpService {
-  private urlBase: string;
-  private push: Function;
+  // Static class, beacause this binding is so complex when passing methods as a parameters.
 
-  constructor(urlBase: string, push: Function) {
-    this.urlBase = urlBase;
-    this.push = push;
-  }
-
-  public usernameFilter = async (username: string) => {
-    console.log(this.urlBase);
-
+  static usernameFilter = (urlBase: string) => async (username: string) => {
     if (!username) {
       return 'Please fill up username';
     } else if (username.length < 6 || username.length > 20) {
       return 'Choose a username 6 - 20 characters long.';
     } else {
-      if (!(await this.checkValidUsername(username))) {
+      if (!(await SignUpService.checkValidUsername(username, urlBase))) {
         return `The username, ${username}, is already exist.`;
       }
     }
   };
 
-  public passwordFilter(password: string) {
+  static passwordFilter = (password: string) => {
     if (!password) {
       return 'Please fill up password';
     } else if (!/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,20}$/.test(password)) {
       return 'Password is not valid.';
     }
-  }
+  };
 
-  public confirmPasswordFilterConstructor(password: string) {
+  static confirmPasswordFilterConstructor = (password: string) => {
     return (confirmPassword: string) => {
       if (!confirmPassword) {
         return 'Please fill up confirm password';
@@ -68,21 +60,21 @@ export default class SignUpService {
         return 'Password does not match.';
       }
     };
-  }
+  };
 
-  public emailFilter = async (email: string) => {
+  static emailFilter = (urlBase: string) => async (email: string) => {
     if (!email) {
       return 'Please fill up email address.';
     } else if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
       return 'The email address is not valid.';
     } else {
-      if (!(await this.checkValidEmail(email))) {
+      if (!(await SignUpService.checkValidEmail(email, urlBase))) {
         return `This email address is already taken.`;
       }
     }
   };
 
-  public validateSignUp = async (values: SignUpValues) => {
+  static validateSignUp = (urlBase: string) => async (values: SignUpValues) => {
     const errors: SignUpErrorValues = {};
 
     const keys = Object.keys(values) as Array<keyof typeof values>;
@@ -92,21 +84,21 @@ export default class SignUpService {
       }
     });
 
-    const usernameError = await this.usernameFilter(values.username);
+    const usernameError = await SignUpService.usernameFilter(urlBase)(values.username);
     if (usernameError) {
       errors.username = usernameError;
     }
-    const passwordError = this.passwordFilter(values.password);
+    const passwordError = SignUpService.passwordFilter(values.password);
     if (passwordError) {
       errors.username = usernameError;
     }
-    const confirmPasswordError = this.confirmPasswordFilterConstructor(values.password)(
+    const confirmPasswordError = SignUpService.confirmPasswordFilterConstructor(values.password)(
       values.password[1]
     );
     if (confirmPasswordError) {
       errors.confirmPassword = confirmPasswordError;
     }
-    const emailError = await this.emailFilter(values.email);
+    const emailError = await SignUpService.emailFilter(urlBase)(values.email);
     if (emailError) {
       errors.email = emailError;
     }
@@ -114,14 +106,15 @@ export default class SignUpService {
     return errors;
   };
 
-  public async handleSubmit(values: SignUpValues) {
-    const result = await this.signUp(values);
+  static handleSubmit = (urlBase: string, push: Function) => async (values: SignUpValues) => {
+    const result = await SignUpService.signUp(values, urlBase);
     if (result === 201) {
-      this.push('/');
+      push('/');
     }
-  }
+  };
 
-  private async signUp(values: SignUpValues) {
+  // private methods
+  private static async signUp(values: SignUpValues, urlBase: string) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -131,11 +124,11 @@ export default class SignUpService {
       body: JSON.stringify(values),
     };
 
-    const response = await fetch(`${this.urlBase}/auth/sign_up`, requestOptions);
+    const response = await fetch(`${urlBase}/auth/sign_up`, requestOptions);
     return response.status;
   }
 
-  private async checkValidUsername(username: string): Promise<boolean> {
+  private static async checkValidUsername(username: string, urlBase: string): Promise<boolean> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -145,13 +138,13 @@ export default class SignUpService {
     };
 
     const response: { isValid: boolean } = await (
-      await fetch(`${this.urlBase}/auth/check_username/${username}`, requestOptions)
+      await fetch(`${urlBase}/auth/check_username/${username}`, requestOptions)
     ).json();
 
     return response.isValid;
   }
 
-  private async checkValidEmail(email: string): Promise<boolean> {
+  private static async checkValidEmail(email: string, urlBase: String): Promise<boolean> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -161,7 +154,7 @@ export default class SignUpService {
     };
 
     const response: { isValid: boolean } = await (
-      await fetch(`${this.urlBase}/auth/check_email/${email}`, requestOptions)
+      await fetch(`${urlBase}/auth/check_email/${email}`, requestOptions)
     ).json();
 
     return response.isValid;

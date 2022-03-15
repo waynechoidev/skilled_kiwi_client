@@ -14,6 +14,7 @@ function useForm<Status, ErrorStatus>({
   const [values, setValues] = useState<Status>(initialValues);
   const [errors, setErrors] = useState<ErrorStatus>({} as ErrorStatus);
   const [isLoading, setIsLoading] = useState(false);
+
   const handleChange =
     (filter?: Filter) =>
     (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
