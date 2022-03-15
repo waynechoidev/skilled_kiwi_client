@@ -34,7 +34,9 @@ export default class SignUpService {
 
   static usernameFilter = (urlBase: string) => async (username: string) => {
     if (!username) {
-      return 'Please fill up username';
+      return 'Please fill up username.';
+    } else if (RegExp(/[^a-zA-Z]/).test(username)) {
+      return 'Only Enlglish username is availabe.';
     } else if (username.length < 6 || username.length > 20) {
       return 'Choose a username 6 - 20 characters long.';
     } else {
