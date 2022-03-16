@@ -6,18 +6,20 @@ import SearchItem from '../components/find_requests/search_item/search_item';
 import useForm from '../hooks/use_form/use_form';
 import SearchFilter from '../components/find_requests/search_filter/search_filter';
 import { RequestsItem, SearchValues } from '../services/request/request';
+import UtilService from '../services/util/util';
 
 interface IProps {
   urlBase: string;
 }
 
 export default function FindRequests({ urlBase }: IProps) {
-  const fetcher = async (url: string) => fetch(url).then((res) => res.json());
-
   const [isHidingSearchTool, setIsHidingSearchTool] = useState(true);
   const [query, setQuery] = useState('');
 
-  const { data, error } = useSWR<RequestsItem[]>(() => `${urlBase}/jobs${query}`, fetcher);
+  const { data, error } = useSWR<RequestsItem[]>(
+    () => `${urlBase}/jobs${query}`,
+    UtilService.fetcher
+  );
 
   const { values, setValues, handleChange, submitHandle } = useForm<SearchValues, {}>({
     initialValues: {

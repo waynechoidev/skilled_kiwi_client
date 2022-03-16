@@ -10,11 +10,10 @@ interface IProps {
   urlBase: string;
 }
 export default function Request({ urlBase }: IProps) {
-  const fetcher = async (url: string) => fetch(url).then((res) => res.json());
   const [isAuth, setIsAuth] = useState(false);
   const router = useRouter();
   const { id } = router.query;
-  const { data, error } = useSWR<RequestsItem>(() => `${urlBase}/jobs/${id}`, fetcher);
+  const { data, error } = useSWR<RequestsItem>(() => `${urlBase}/jobs/${id}`, UtilService.fetcher);
 
   const auth = useContext(authContext);
   useEffect(() => {

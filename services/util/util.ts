@@ -27,4 +27,8 @@ export default class UtilService {
     const newDate = new Date(dateStr).toDateString().split(' ');
     return `${newDate[1]}, ${newDate[2]} ${newDate[3]}`;
   }
+
+  static async fetcher(url: string) {
+    return fetch(url).then((res) => res.json());
+  }
 }

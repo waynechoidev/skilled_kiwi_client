@@ -1,6 +1,18 @@
 import UtilService from './util';
 
 describe('UtilService', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn().mockImplementation(() => {
+      return new Promise((resolve, reject) => {
+        resolve({
+          json: () => {
+            return {};
+          },
+        });
+      });
+    });
+  });
+
   describe('calculateByte', () => {
     it('caculate bytes under 1KB', () => {
       expect(UtilService.calculateByte(500)).toBe('0.49 KB');
@@ -37,6 +49,12 @@ describe('UtilService', () => {
   describe('getDateAndYear', () => {
     it('gets date and year from string', () => {
       expect(UtilService.getDateAndYear('2022-03-07 13:41:39')).toBe('Mar, 07 2022');
+    });
+  });
+
+  describe('fetcher', () => {
+    it('returns json', async () => {
+      expect(await UtilService.fetcher('https://google.com')).toEqual({});
     });
   });
 });
