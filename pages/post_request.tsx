@@ -1,18 +1,18 @@
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import ErrorMessage from '../components/common/error_message/error_message';
-import useForm from '../hooks/use_form';
+import useForm from '../hooks/use_form/use_form';
 import styles from '../styles/post_request.module.css';
 
-import UtilService from '../services/util';
+import UtilService from '../services/util/util';
 import { authContext } from '../context/auth';
 import Input from '../components/common/input/input';
 import RequestService, {
   RequestErrorValues,
   RequestImage,
   RequestValues,
-} from '../services/request';
-import UserService, { District } from '../services/user';
+} from '../services/request/request';
+import UserService, { District } from '../services/user/user';
 
 interface IProps {
   urlBase: string;

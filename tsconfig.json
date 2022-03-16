@@ -18,11 +18,10 @@
   "include": [
     "next-env.d.ts",
     "pages/**/*",
-    "atoms/**/*",
+    "context/**/*",
     "components/**/*",
-    "data/**/*",
     "services/**/*",
-    "hooks"
+    "hooks/**/*"
   ],
   "exclude": ["node_modules"]
 }

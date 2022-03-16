@@ -1,6 +1,6 @@
 import React from 'react';
-import RequestService, { SearchValues } from '../../../services/request';
-import UserService, { District } from '../../../services/user';
+import RequestService, { SearchValues } from '../../../services/request/request';
+import UserService, { District } from '../../../services/user/user';
 import styles from './search_filter.module.css';
 
 interface IProps {

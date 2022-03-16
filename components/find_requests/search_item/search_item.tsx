@@ -1,8 +1,8 @@
 import React from 'react';
-import UtilService from '../../../services/util';
+import UtilService from '../../../services/util/util';
 import styles from './search_item.module.css';
 import Link from 'next/link';
-import { RequestsItem } from '../../../services/request';
+import { RequestsItem } from '../../../services/request/request';
 
 interface IProps {
   item: RequestsItem;

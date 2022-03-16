@@ -1,4 +1,4 @@
-import { District, Suburb } from './user';
+import { District, Suburb } from '../user/user';
 
 export type JobCategory = typeof RequestService.jobCategoryList[number];
 export type RequestValues = {

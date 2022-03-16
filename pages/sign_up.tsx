@@ -3,9 +3,9 @@ import React, { useContext } from 'react';
 import ErrorMessage from '../components/common/error_message/error_message';
 import SignUpInput from '../components/sign_up/sign_up_input/sign_up_input';
 import { authContext } from '../context/auth';
-import useForm from '../hooks/use_form';
-import SignUpService, { SignUpErrorValues, SignUpValues } from '../services/sign_up';
-import UserService, { District } from '../services/user';
+import useForm from '../hooks/use_form/use_form';
+import SignUpService, { SignUpErrorValues, SignUpValues } from '../services/sign_up/sign_up';
+import UserService, { District } from '../services/user/user';
 import styles from '../styles/sign_up.module.css';
 
 interface IProps {

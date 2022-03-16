@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import UtilService from '../services/util';
+import UtilService from '../services/util/util';
 import styles from '../styles/find_requests.module.css';
 
 import SearchItem from '../components/find_requests/search_item/search_item';
-import useForm from '../hooks/use_form';
+import useForm from '../hooks/use_form/use_form';
 import SearchFilter from '../components/find_requests/search_filter/search_filter';
-import { RequestsItem, SearchValues } from '../services/request';
+import { RequestsItem, SearchValues } from '../services/request/request';
 
 interface IProps {
   urlBase: string;

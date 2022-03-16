@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import styles from '../../styles/request.module.css';
 import Link from 'next/link';
-import UtilService from '../../services/util';
-import { RequestsItem } from '../../services/request';
+import UtilService from '../../services/util/util';
+import { RequestsItem } from '../../services/request/request';
 import { authContext } from '../../context/auth';
 interface IProps {
   urlBase: string;
