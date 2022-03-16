@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import UtilService from '../services/util/util';
 import styles from '../styles/find_requests.module.css';
 
 import SearchItem from '../components/find_requests/search_item/search_item';
@@ -13,13 +12,12 @@ interface IProps {
 }
 
 export default function FindRequests({ urlBase }: IProps) {
+  const fetcher = async (url: string) => fetch(url).then((res) => res.json());
+
   const [isHidingSearchTool, setIsHidingSearchTool] = useState(true);
   const [query, setQuery] = useState('');
 
-  const { data, error } = useSWR<RequestsItem[]>(
-    () => `${urlBase}/jobs${query}`,
-    UtilService.fetcher
-  );
+  const { data, error } = useSWR<RequestsItem[]>(() => `${urlBase}/jobs${query}`, fetcher);
 
   const { values, setValues, handleChange, submitHandle } = useForm<SearchValues, {}>({
     initialValues: {

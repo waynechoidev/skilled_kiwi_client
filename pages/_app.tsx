@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '../components/common/layout';
 import { useRouter } from 'next/router';
-import AuthProvider from '../context/auth';
+import AuthProvider from '../context/auth/auth';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;

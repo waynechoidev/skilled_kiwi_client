@@ -5,7 +5,7 @@ import useForm from '../hooks/use_form/use_form';
 import styles from '../styles/post_request.module.css';
 
 import UtilService from '../services/util/util';
-import { authContext } from '../context/auth';
+import { authContext } from '../context/auth/auth';
 import Input from '../components/common/input/input';
 import RequestService, {
   RequestErrorValues,

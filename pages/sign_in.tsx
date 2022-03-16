@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import styles from '../styles/sign_in.module.css';
-import { authContext } from '../context/auth';
+import { authContext } from '../context/auth/auth';
 import Link from 'next/link';
 
 export default function SignIn() {

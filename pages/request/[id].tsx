@@ -5,15 +5,16 @@ import styles from '../../styles/request.module.css';
 import Link from 'next/link';
 import UtilService from '../../services/util/util';
 import { RequestsItem } from '../../services/request/request';
-import { authContext } from '../../context/auth';
+import { authContext } from '../../context/auth/auth';
 interface IProps {
   urlBase: string;
 }
 export default function Request({ urlBase }: IProps) {
+  const fetcher = async (url: string) => fetch(url).then((res) => res.json());
   const [isAuth, setIsAuth] = useState(false);
   const router = useRouter();
   const { id } = router.query;
-  const { data, error } = useSWR<RequestsItem>(() => `${urlBase}/jobs/${id}`, UtilService.fetcher);
+  const { data, error } = useSWR<RequestsItem>(() => `${urlBase}/jobs/${id}`, fetcher);
 
   const auth = useContext(authContext);
   useEffect(() => {
