@@ -97,19 +97,20 @@ export default class RequestService {
       requestOptions
     ).then((res) => res.json());
 
-    return (await response).url;
+    return response;
   }
 
   static handleSubmitConstructor(token: string, urlBase: string, push: Function) {
     return async (values: RequestValues) => {
       const result = await RequestService.postRequest(`${urlBase}/jobs`, values, token);
       if (result.id) {
+        console.log(result.id);
         push(`/request/${result.id}`);
       }
     };
   }
 
-  static async postRequest(url: string, values: RequestValues, token: string) {
+  private static async postRequest(url: string, values: RequestValues, token: string) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('Authorization', `Bearer ${token}`);

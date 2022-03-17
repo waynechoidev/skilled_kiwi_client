@@ -6,7 +6,7 @@ import AuthProvider from '../context/auth/auth';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pathName = useRouter().pathname;
-  const urlBase = 'https://skilledkiwi.herokuapp.com';
+  const urlBase = 'http://skilledkiwi.herokuapp.com';
 
   return (
     <AuthProvider urlBase={urlBase}>

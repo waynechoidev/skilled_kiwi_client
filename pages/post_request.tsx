@@ -172,7 +172,10 @@ export default function PostRequest({ urlBase }: IProps) {
                   name: file.name,
                   size: UtilService.calculateByte(file.size),
                 };
-                values.images = [...values.images, await RequestService.uploadImage(file)];
+                values.images = [
+                  ...values.images,
+                  (await RequestService.uploadImage(file)).url.replace('http://', 'https://'),
+                ];
                 setImages([...images, newImage]);
               }
             }
