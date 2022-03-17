@@ -96,7 +96,7 @@ export default class AuthService {
     return this.userId;
   }
 
-  private async reIssueToken(userId: string, refreshToken: string): Promise<string | undefined> {
+  private async reIssueToken(userId: string, refreshToken: string): Promise<void> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -110,25 +110,18 @@ export default class AuthService {
     };
     const response = await fetch(`${this.urlBase}/auth/reissue_token`, requestOptions);
     const result: SignInResult = await response.json();
-
     if (response.status > 199 && response.status < 300) {
       this.setTokenFromResponse(result);
       this.update();
-      return 'success';
     } else {
       this.signOut();
-      return result.message;
     }
   }
-  private isAccessTokenExpired(expiredTime?: string) {
-    if (!expiredTime) {
-      return 'yes';
-    }
-
+  private isAccessTokenExpired(expiredTime: string) {
     if (this.date!.getTime() >= parseInt(expiredTime)) {
-      return 'yes';
+      return true;
     } else {
-      return 'no';
+      return false;
     }
   }
   private setMembersFromStorage() {
@@ -159,7 +152,6 @@ export default class AuthService {
 
     this.setStorageFromMembers();
     this.isAuth = 'yes';
-    this.update();
   }
   private update() {
     const status: AuthStatus = { token: this.accessToken!, isAuth: this.isAuth! };
