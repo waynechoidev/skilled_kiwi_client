@@ -34,3 +34,4 @@ Skilled Kiwi is a platform designed to connect skilled individuals with those in
   - Bidding for jobs
   - Life Hack sharing
   - Real time chat service
+  - Touch slide carousel for mobile
