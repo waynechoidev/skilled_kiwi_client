@@ -29,7 +29,6 @@ export default class AuthService {
 
   public async init(urlBase: string, window: Window, date: Date, setStatus: Function) {
     this.urlBase = urlBase;
-
     this.setStatus = setStatus;
     this.window = window;
     this.date = date;
@@ -69,7 +68,8 @@ export default class AuthService {
     const response = await fetch(`${this.urlBase}/auth/sign_in`, requestOptions);
     const result: SignInResult = await response.json();
     if (response.status > 199 && response.status < 300) {
-      this.setTokenFromResponse(result, isChecked);
+      this.setMembersFromResponse(result, isChecked);
+      this.setStorageFromMembers();
       this.update();
       return 'success';
     } else {
@@ -111,7 +111,8 @@ export default class AuthService {
     const response = await fetch(`${this.urlBase}/auth/reissue_token`, requestOptions);
     const result: SignInResult = await response.json();
     if (response.status > 199 && response.status < 300) {
-      this.setTokenFromResponse(result);
+      this.setMembersFromResponse(result);
+      this.setStorageFromMembers();
       this.update();
     } else {
       this.signOut();
@@ -134,6 +135,7 @@ export default class AuthService {
     this.expiredTime = window[storage].getItem('expiredTime')!;
     this.userId = window[storage].getItem('userId')!;
   }
+
   private setStorageFromMembers() {
     window.localStorage.setItem('stored', this.stored!);
     window[this.stored!].setItem('accessToken', this.accessToken!);
@@ -141,7 +143,7 @@ export default class AuthService {
     window[this.stored!].setItem('expiredTime', this.expiredTime!);
     window[this.stored!].setItem('userId', this.userId!);
   }
-  private setTokenFromResponse(result: SignInResult, isChecked?: boolean) {
+  private setMembersFromResponse(result: SignInResult, isChecked?: boolean) {
     this.accessToken = result.accessToken;
     this.refreshToken = result.refreshToken;
     this.expiredTime = result.expiredTime;
@@ -150,7 +152,6 @@ export default class AuthService {
       this.stored = isChecked ? 'localStorage' : 'sessionStorage';
     }
 
-    this.setStorageFromMembers();
     this.isAuth = 'yes';
   }
   private update() {
