@@ -35,3 +35,8 @@ Skilled Kiwi is a platform designed to connect skilled individuals with those in
   - Life Hack sharing
   - Real time chat service
   - Touch slide carousel for mobile
+
+## Posts
+
+- [State management with Class in React](https://waynechoi.dev/state_management_with_class_in_react)
+- [Auth Module for any frontend framework](https://waynechoi.dev/auth_module_for_any_frontend_framework)
