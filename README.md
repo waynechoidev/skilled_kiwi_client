@@ -29,8 +29,9 @@ Skilled Kiwi is a platform designed to connect skilled individuals with those in
 - Post a job [Demo](https://skilledkiwi.netlify.app/post_request)
 - View a job [Demo](https://skilledkiwi.netlify.app/request/2)
 
-  ### To be implemented future
+  ### To be implemented in the future
 
   - Bidding for jobs
   - Life Hack sharing
   - Real time chat service
+  - Touch slide carousel for mobile
