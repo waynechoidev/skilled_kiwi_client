@@ -39,7 +39,7 @@ export default class SignUpService {
   public usernameFilter = () => {
     const checkValidUsername = this.checkValidUsername;
     const urlBase = this.urlBase;
-    // arrow function of this is set when declaratin.
+    // this of arrow function is set when declaratin.
     // If I return a new arrow function with method with this(this.~), it set on runtime, and it should be undefined.
 
     return async (username: string) => {
