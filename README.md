@@ -40,3 +40,4 @@ Skilled Kiwi is a platform designed to connect skilled individuals with those in
 
 - [State management with Class in React](https://waynechoi.dev/state_management_with_class_in_react)
 - [Auth Module for any frontend framework](https://waynechoi.dev/auth_module_for_any_frontend_framework)
+- [https://waynechoi.dev/method_returning_callback_with_this_for_event_handler](https://waynechoi.dev/method_returning_callback_with_this_for_event_handler)
