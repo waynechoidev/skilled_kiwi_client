@@ -30,23 +30,34 @@ export type SignUpErrorValues = {
 };
 
 export default class SignUpService {
-  // Static class, beacause this binding is so complex when passing methods as a parameters.
+  private urlBase: string;
 
-  static usernameFilter = (urlBase: string) => async (username: string) => {
-    if (!username) {
-      return 'Please fill up username.';
-    } else if (RegExp(/[^a-z0-9]/).test(username)) {
-      return 'Only Enlglish username is availabe.';
-    } else if (username.length < 6 || username.length > 20) {
-      return 'Choose a username 6 - 20 characters long.';
-    } else {
-      if (!(await SignUpService.checkValidUsername(username, urlBase))) {
-        return `The username, ${username}, is already exist.`;
+  constructor(urlBase: string) {
+    this.urlBase = urlBase;
+  }
+
+  public usernameFilter = () => {
+    const checkValidUsername = this.checkValidUsername;
+    const urlBase = this.urlBase;
+    // arrow function of this is set when declaratin.
+    // If I return a new arrow function with method with this(this.~), it set on runtime, and it should be undefined.
+
+    return async (username: string) => {
+      if (!username) {
+        return 'Please fill up username.';
+      } else if (RegExp(/[^a-z0-9]/).test(username)) {
+        return 'Only Enlglish username is availabe.';
+      } else if (username.length < 6 || username.length > 20) {
+        return 'Choose a username 6 - 20 characters long.';
+      } else {
+        if (!(await checkValidUsername(username, urlBase))) {
+          return `The username, ${username}, is already exist.`;
+        }
       }
-    }
+    };
   };
 
-  static passwordFilter = (password: string) => {
+  public passwordFilter = (password: string) => {
     if (!password) {
       return 'Please fill up password';
     } else if (!/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,20}$/.test(password)) {
@@ -54,7 +65,7 @@ export default class SignUpService {
     }
   };
 
-  static confirmPasswordFilterConstructor = (password: string) => {
+  public confirmPasswordFilterConstructor = (password: string) => {
     return (confirmPassword: string) => {
       if (!confirmPassword) {
         return 'Please fill up confirm password';
@@ -64,59 +75,77 @@ export default class SignUpService {
     };
   };
 
-  static emailFilter = (urlBase: string) => async (email: string) => {
-    if (!email) {
-      return 'Please fill up email address.';
-    } else if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
-      return 'The email address is not valid.';
-    } else {
-      if (!(await SignUpService.checkValidEmail(email, urlBase))) {
-        return `This email address is already taken.`;
+  public emailFilter = () => {
+    const checkValidEmail = this.checkValidEmail;
+    const urlBase = this.urlBase;
+
+    return async (email: string) => {
+      if (!email) {
+        return 'Please fill up email address.';
+      } else if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
+        return 'The email address is not valid.';
+      } else {
+        if (!(await checkValidEmail(email, urlBase))) {
+          return `This email address is already taken.`;
+        }
       }
-    }
+    };
   };
 
-  static validateSignUp = (urlBase: string) => async (values: SignUpValues) => {
-    const errors: SignUpErrorValues = {};
+  public validateSignUp = () => {
+    const usernameFilter = this.usernameFilter;
+    const passwordFilter = this.passwordFilter;
+    const confirmPasswordFilterConstructor = this.confirmPasswordFilterConstructor;
+    const emailFilter = this.emailFilter;
+    const urlBase = this.urlBase;
 
-    const keys = Object.keys(values) as Array<keyof typeof values>;
-    keys.forEach((i) => {
-      if (!values[i]) {
-        errors[i] = `Please fill up the ${i}`;
+    return async (values: SignUpValues) => {
+      const errors: SignUpErrorValues = {};
+
+      const keys = Object.keys(values) as Array<keyof typeof values>;
+      keys.forEach((i) => {
+        if (!values[i]) {
+          errors[i] = `Please fill up the ${i}`;
+        }
+      });
+
+      const usernameError = await usernameFilter()(values.username);
+      if (usernameError) {
+        errors.username = usernameError;
       }
-    });
+      const passwordError = passwordFilter(values.password);
+      if (passwordError) {
+        errors.username = usernameError;
+      }
+      const confirmPasswordError = confirmPasswordFilterConstructor(values.password)(
+        values.confirmPassword
+      );
+      if (confirmPasswordError) {
+        errors.confirmPassword = confirmPasswordError;
+      }
+      const emailError = await emailFilter()(values.email);
+      if (emailError) {
+        errors.email = emailError;
+      }
 
-    const usernameError = await SignUpService.usernameFilter(urlBase)(values.username);
-    if (usernameError) {
-      errors.username = usernameError;
-    }
-    const passwordError = SignUpService.passwordFilter(values.password);
-    if (passwordError) {
-      errors.username = usernameError;
-    }
-    const confirmPasswordError = SignUpService.confirmPasswordFilterConstructor(values.password)(
-      values.confirmPassword
-    );
-    if (confirmPasswordError) {
-      errors.confirmPassword = confirmPasswordError;
-    }
-    const emailError = await SignUpService.emailFilter(urlBase)(values.email);
-    if (emailError) {
-      errors.email = emailError;
-    }
-
-    return errors;
+      return errors;
+    };
   };
 
-  static handleSubmit = (urlBase: string, push: Function) => async (values: SignUpValues) => {
-    const result = await SignUpService.signUp(values, urlBase);
-    if (result === 201) {
-      push('/');
-    }
+  public handleSubmit = (push: Function) => {
+    const signUp = this.signUp;
+    const urlBase = this.urlBase;
+
+    return async (values: SignUpValues) => {
+      const result = await signUp(values, urlBase);
+      if (result === 201) {
+        push('/');
+      }
+    };
   };
 
   // private methods
-  private static async signUp(values: SignUpValues, urlBase: string) {
+  private async signUp(values: SignUpValues, urlBase: string) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -130,7 +159,7 @@ export default class SignUpService {
     return response.status;
   }
 
-  private static async checkValidUsername(username: string, urlBase: string): Promise<boolean> {
+  private async checkValidUsername(username: string, urlBase: string): Promise<boolean> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -146,7 +175,7 @@ export default class SignUpService {
     return response.isValid;
   }
 
-  private static async checkValidEmail(email: string, urlBase: String): Promise<boolean> {
+  private async checkValidEmail(email: string, urlBase: string): Promise<boolean> {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 

@@ -21,9 +21,11 @@ describe('SignUpService', () => {
       });
     });
   };
+  const signUp = new SignUpService('fakeURL');
 
   describe('userNameFilter', () => {
-    const newFilter = SignUpService.usernameFilter('fakeURL');
+    console.log(signUp);
+    const newFilter = signUp.usernameFilter();
 
     it('has empty username', async () => {
       expect(await newFilter('')).toBe('Please fill up username.');
@@ -54,26 +56,24 @@ describe('SignUpService', () => {
     //Choose a password 8 - 20 characters including at least a letter, a number and a special character (!@#$%^&*).
 
     it('has empty password', () => {
-      expect(SignUpService.passwordFilter('')).toBe('Please fill up password');
+      expect(signUp.passwordFilter('')).toBe('Please fill up password');
     });
     it('has too short password', () => {
-      expect(SignUpService.passwordFilter('123')).toBe('Password is not valid.');
+      expect(signUp.passwordFilter('123')).toBe('Password is not valid.');
     });
     it('has too long password', () => {
-      expect(SignUpService.passwordFilter('12345678901234567890123')).toBe(
-        'Password is not valid.'
-      );
+      expect(signUp.passwordFilter('12345678901234567890123')).toBe('Password is not valid.');
     });
     it('has only number password', () => {
-      expect(SignUpService.passwordFilter('1234567890')).toBe('Password is not valid.');
+      expect(signUp.passwordFilter('1234567890')).toBe('Password is not valid.');
     });
     it('has right password', () => {
-      expect(SignUpService.passwordFilter('1234!@#$abcd')).toBe(undefined);
+      expect(signUp.passwordFilter('1234!@#$abcd')).toBe(undefined);
     });
   });
 
   describe('confirmPasswordFilterConstructor', () => {
-    const confirmPasswordFilter = SignUpService.confirmPasswordFilterConstructor('abc123!@#');
+    const confirmPasswordFilter = signUp.confirmPasswordFilterConstructor('abc123!@#');
 
     it('has empty confirm password', () => {
       expect(confirmPasswordFilter('')).toBe('Please fill up confirm password');
@@ -89,7 +89,7 @@ describe('SignUpService', () => {
   });
 
   describe('emailNameFilter', () => {
-    const newFilter = SignUpService.emailFilter('fakeURL');
+    const newFilter = signUp.emailFilter();
 
     it('has empty email address', async () => {
       expect(await newFilter('')).toBe('Please fill up email address.');
@@ -112,7 +112,7 @@ describe('SignUpService', () => {
     let values: SignUpValues;
 
     beforeEach(() => {
-      newFilter = SignUpService.validateSignUp('fakeURL');
+      newFilter = signUp.validateSignUp();
       values = {
         username: 'chwj1212',
         password: '123!@#abc',
@@ -191,11 +191,11 @@ describe('SignUpService', () => {
       district: 'Auckland',
       suburb: 'Albany',
     };
-    let push: Function;
     let newSubmitHandler: (values: SignUpValues) => Promise<void>;
+    let push: Function;
     beforeEach(() => {
       push = jest.fn();
-      newSubmitHandler = SignUpService.handleSubmit('fakeURL', push);
+      newSubmitHandler = signUp.handleSubmit(push);
     });
 
     it('has 201 code', async () => {

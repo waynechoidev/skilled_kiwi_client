@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import ErrorMessage from '../components/common/error_message/error_message';
 import SignUpInput from '../components/sign_up/sign_up_input/sign_up_input';
-import { authContext } from '../context/auth/auth';
 import useForm from '../hooks/use_form/use_form';
 import SignUpService, { SignUpErrorValues, SignUpValues } from '../services/sign_up/sign_up';
 import UserService, { District } from '../services/user/user';
@@ -14,6 +13,7 @@ interface IProps {
 
 export default function SignUp({ urlBase }: IProps) {
   const router = useRouter();
+  const signUp = new SignUpService(urlBase);
   const { values, setValues, errors, handleChange, submitHandle } = useForm<
     SignUpValues,
     SignUpErrorValues
@@ -32,8 +32,8 @@ export default function SignUp({ urlBase }: IProps) {
       district: 'Auckland',
       suburb: 'Albany',
     },
-    onSubmit: SignUpService.handleSubmit(urlBase, router.push),
-    validate: SignUpService.validateSignUp(urlBase),
+    onSubmit: signUp.handleSubmit(router.push),
+    validate: signUp.validateSignUp(),
   });
 
   const genderButton = (genderItem: 'male' | 'female' | 'diverse') => {
@@ -60,7 +60,7 @@ export default function SignUp({ urlBase }: IProps) {
             type="text"
             name="username"
             value={values.username}
-            onChange={handleChange(SignUpService.usernameFilter(urlBase))}
+            onChange={handleChange(signUp.usernameFilter())}
             error={errors.username}
           />
 
@@ -73,7 +73,7 @@ export default function SignUp({ urlBase }: IProps) {
             type="password"
             name="password"
             value={values.password}
-            onChange={handleChange(SignUpService.passwordFilter)}
+            onChange={handleChange(signUp.passwordFilter)}
             error={errors.password}
           />
 
@@ -84,7 +84,7 @@ export default function SignUp({ urlBase }: IProps) {
             value={values.confirmPassword}
             onChange={(e) => {
               errors.password ||
-                handleChange(SignUpService.confirmPasswordFilterConstructor(values.password))(e);
+                handleChange(signUp.confirmPasswordFilterConstructor(values.password))(e);
             }}
             error={errors.confirmPassword}
           />
@@ -94,7 +94,7 @@ export default function SignUp({ urlBase }: IProps) {
             type="text"
             name="email"
             value={values.email}
-            onChange={handleChange(SignUpService.emailFilter(urlBase))}
+            onChange={handleChange(signUp.emailFilter())}
             error={errors.email}
           />
         </div>
