@@ -1,0 +1,16 @@
+.container {
+  width: 100%;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 20px;
+  font-size: 1.5rem;
+}
+
+.wrapper img {
+  height: 1.5rem;
+  margin: auto 1rem;
+}

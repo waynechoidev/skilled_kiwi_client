@@ -1,5 +1,6 @@
 import React from 'react';
+import ErrorRender from '../components/common/error_render/error_render';
 
 export default function LifeHack() {
-  return <div>Getting Ready</div>;
+  return <ErrorRender message="Getting Ready" />;
 }

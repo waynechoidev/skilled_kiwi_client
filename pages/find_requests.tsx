@@ -7,6 +7,7 @@ import useForm from '../hooks/use_form/use_form';
 import SearchFilter from '../components/find_requests/search_filter/search_filter';
 import { RequestsItem, SearchValues } from '../services/request/request';
 import UtilService from '../services/util/util';
+import ErrorRender from '../components/common/error_render/error_render';
 
 interface IProps {
   urlBase: string;
@@ -49,8 +50,20 @@ export default function FindRequests({ urlBase }: IProps) {
     validate: async () => ({}),
   });
 
-  if (error) return 'An error has occurred.';
-  if (!data) return 'Loading...';
+  if (error) {
+    return <ErrorRender message="Something Wrong" />;
+  }
+  if (!data) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.wrapper}>
+          <div className={styles.spinner}>
+            <img src="/img/spinner.gif" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
