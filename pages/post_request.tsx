@@ -44,11 +44,11 @@ export default function PostRequest({ urlBase }: IProps) {
     validate: RequestService.validateSubmitRequest,
   });
 
-  useEffect(() => {
-    if (isAuth === 'no') {
-      router.push('/sign_in?back_to=post_request');
-    }
-  }, [isAuth]);
+  // useEffect(() => {
+  //   if (isAuth === 'no') {
+  //     router.push('/sign_in?back_to=post_request');
+  //   }
+  // }, [isAuth]);
 
   return (
     <div className={styles.container}>

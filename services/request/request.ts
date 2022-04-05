@@ -102,10 +102,14 @@ export default class RequestService {
 
   static handleSubmitConstructor(token: string, urlBase: string, push: Function) {
     return async (values: RequestValues) => {
-      const result = await RequestService.postRequest(`${urlBase}/jobs`, values, token);
-      if (result.id) {
-        console.log(result.id);
-        push(`/request/${result.id}`);
+      if (token) {
+        const result = await RequestService.postRequest(`${urlBase}/jobs`, values, token);
+        if (result.id) {
+          console.log(result.id);
+          push(`/request/${result.id}`);
+        }
+      } else {
+        alert('You need to sign in');
       }
     };
   }
