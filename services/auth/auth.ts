@@ -5,11 +5,11 @@ type SignInResult = {
   expiredTime: string;
   userId: string;
 };
-
 export type AuthStatus = {
   token: string;
   isAuth: 'yes' | 'no' | '';
 };
+
 export default class AuthService {
   private urlBase!: string;
   private date!: Date;
