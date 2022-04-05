@@ -14,6 +14,14 @@ Skilled Kiwi is a platform designed to connect skilled individuals with those in
 
   mock user Password: abcd1234!
 
+## Backend Application
+
+I built a backend application with Express.js and TypeScript. It is a restful API server with MYSQL database for user information and job posts.
+
+I implemented authentication with JWT tokens. Temporarily it saves refresh tokens on its memory.
+
+- [Backend Repository](https://github.com/radicalDilettante/skilled_kiwi_client)
+
 ## Global State Management (Context API)
 
 I used context API to manage global statement. It was for an access JWT token for user authentication.
