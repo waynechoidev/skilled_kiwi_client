@@ -14,6 +14,10 @@ Skilled Kiwi is a platform designed to connect skilled individuals with those in
 
   mock user Password: abcd1234!
 
+## Mobile Responsive
+
+<img width="200" src="./public/screenshot/2.jpg">
+
 ## Backend Application
 
 I built a backend application with Express.js and TypeScript. It is a restful API server with MYSQL database for user information and job posts.
@@ -56,6 +60,7 @@ However, I made most of the logics with static class. There is a class keyword i
 
 ## To be implemented in the future
 
+- Skeleton UI when loading data
 - Bidding for jobs
 - Life Hack sharing
 - Real time chat service
