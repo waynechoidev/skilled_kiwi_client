@@ -6,38 +6,49 @@ Skilled Kiwi is a platform designed to connect skilled individuals with those in
 
 > This application is still under development. I just provide a demo page.
 
-- [Demo](http://skilledkiwi.netlify.app/)
+<img width="400" src="./public/screenshot/1.jpg">
+
+- [Demo Service](http://skilledkiwi.netlify.app/)
 
   mock user ID: abcd1234
 
   mock user Password: abcd1234!
 
-<img width="800" src="./public/screenshot/1.jpg">
+## Global State Management (Context API)
 
-<img width="400" src="./public/screenshot/2.jpg">
+I used context API to manage global statement. It was for an access JWT token for user authentication.
 
-## Features
+## Fetching Data (SWR)
 
-- Sign In [Demo](http://skilledkiwi.netlify.app/sign_in)
+I used SWR to fetch data from backend API. Why I don't use fetch API or Axios, but SWR is that it cache the data. It prevents unnecessary requests.
 
-  mock user ID: abcd1234
+## Authentication
 
-  mock user Password: abcd1234!
+I implemented an authentication module, and it is not dependent to any framework or library. It is made with TS class, so it has its own status. I injected all the dependency to update state of frontend framework, and local storage.
 
-- Sign Up [Demo](http://skilledkiwi.netlify.app/sign_up)
-- Search jobs [Demo](http://skilledkiwi.netlify.app/find_requests)
-- Post a job [Demo](https://skilledkiwi.netlify.app/post_request)
-- View a job [Demo](https://skilledkiwi.netlify.app/request/2)
+- [Auth Module for any frontend framework](https://waynechoi.dev/auth_module_for_any_frontend_framework)
 
-  ### To be implemented in the future
+## Custom Hooks
 
-  - Bidding for jobs
-  - Life Hack sharing
-  - Real time chat service
-  - Touch slide carousel for mobile
+I made a custom hooks to manage statements for form and input. To re-use in multiple components, I implemented branching process with optional parameters.
 
-## Posts
+## Unit Test (Jest)
+
+I write unit test codes with Jest library. I mocked HTTP request modules, and functions to be injected.
+
+## Object Oriented Programming
+
+I did partly OOP. In my point of view, sign up and authentication logics are better to have their own states, and they can be implemented without dependence on React library. So I made it with class.
+
+If I decoupled to reduce dependence with class, it makes better maintainability, and easier test code. At the same time, it costs a lot to convert states from the class instance to the React library, and even from the React library to the class instance.
+
+However, I made most of the logics with static class. There is a class keyword in static class, but it is same as multiple number of functions. Because it does not have states, but only actions.
 
 - [State management with Class in React](https://waynechoi.dev/state_management_with_class_in_react)
-- [Auth Module for any frontend framework](https://waynechoi.dev/auth_module_for_any_frontend_framework)
-- [https://waynechoi.dev/method_returning_callback_with_this_for_event_handler](https://waynechoi.dev/method_returning_callback_with_this_for_event_handler)
+
+## To be implemented in the future
+
+- Bidding for jobs
+- Life Hack sharing
+- Real time chat service
+- Touch slide carousel for mobile
