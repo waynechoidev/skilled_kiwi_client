@@ -1,4 +1,5 @@
-# Skilled Kiwi Client
+# ~~Skilled Kiwi Client~~
+It is deprecated.
 
 Skilled Kiwi is a platform designed to connect skilled individuals with those in need of their help. I got the motivation from people who live alone or are old, so have to fix almost of daily issue with extremely high cost. It doesn't mean highly-professional work, but simple work many forks do on their own like lawn mowing, change light bulbs or connect Internet.
 
